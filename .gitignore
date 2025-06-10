@@ -1,0 +1,7 @@
+.env
+data/*
+.DS_Store
+# .csv
+.kml
+.geojson
+.Rproj.user
