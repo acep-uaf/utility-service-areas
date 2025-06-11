@@ -6,8 +6,6 @@ dir.create("data", showWarnings = FALSE)
 certificates_csv <- read_csv("rca_electric_certificates.csv") %>%
   filter(`certificate_status` == "Active")  # Filter to active utilities
 
-# TODO: download certificate PDF for alternate parsing of service area description...
-
 download_kml_and_cert <- function(certificate) {
   cert_url <- certificate$cpcn_url
   cert_number <- certificate$certificate_number
