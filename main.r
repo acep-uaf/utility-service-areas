@@ -146,10 +146,3 @@ certificates <- certificates_csv %>%
   rename(alt_name = kml_utility_name) %>%
   mutate(alt_name = ifelse(name_match, NA_character_, alt_name)) %>%
   select(-c(name_match, kml_utility_type)) # Don't really need these right now
-
-
-get_certificate_chronology <- function(cert_url) {
-  # TODO: Implement this
-  response <- POST(cert_url)
-  return(response)
-}
