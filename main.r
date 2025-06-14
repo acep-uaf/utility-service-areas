@@ -3,6 +3,7 @@ library(rvest)
 library(glue)
 library(sf)
 library(httr)
+library(lubridate, warn.conflicts = FALSE)
 dir.create("data", showWarnings = FALSE)
 
 certificates_csv <- read_csv("rca_electric_certificates.csv") %>%
@@ -108,7 +109,7 @@ for (i in 1:nrow(certificates_csv)) {
 read_kml_description <- function(cert_num) {
   kml_path <- glue("data/{cert_num}-servicearea.kml")
   stopifnot(file.exists(kml_path))
-  desc <- st_read(kml_path, quiet = TRUE)[1, ]$Description # A few KMLs for Doyon Electric utilities have duplicated description fields (one in HTML for some reason, just get the first one for now). TODO test length and make sure they are identical
+  desc <- st_read(kml_path, quiet = TRUE)[1, ]$Description # A few KMLs for Doyon Electric utilities have duplicated description fields (one in HTML for some reason, just get the first one for now). TODO test length of duplicates to make sure they are identical. Low priority since this only happens once or twice.
   if (startsWith(desc, "<html")) {
     # https://rca.alaska.gov/RCAWeb/Certificate/CertificateDetails.aspx?id=c89cf393-1bf6-483d-a777-e9af4b204710
     # https://www.statology.org/r-find-character-in-string/
@@ -124,6 +125,18 @@ read_kml_description <- function(cert_num) {
 }
 
 safe_read_kml_description <- possibly(read_kml_description, otherwise = NA_character_)
+
+read_chronology_table <- function(cert_num) {
+  chronology_path <- glue("data/{cert_num}-certificate-chronology.html")
+  stopifnot(file.exists(chronology_path))
+  chronology_table <- read_html(chronology_path) %>%
+    html_element("table.RCAGrid") %>%
+    html_table() # Table is already sorted with most recent events first
+  most_recent_row <- chronology_table[1, ]
+  return(most_recent_row)
+}
+
+safe_read_chronology_table <- possibly(read_chronology_table, otherwise = NA_character_)
 
 certificates <- certificates_csv %>%
   rowwise() %>%
@@ -145,4 +158,17 @@ certificates <- certificates_csv %>%
   mutate(name_match = tolower(certificate_name) == tolower(kml_utility_name)) %>%
   rename(alt_name = kml_utility_name) %>%
   mutate(alt_name = ifelse(name_match, NA_character_, alt_name)) %>%
-  select(-c(name_match, kml_utility_type)) # Don't really need these right now
+  select(-c(name_match, kml_utility_type)) %>% # Don't really need these right now
+  rowwise() %>%
+  mutate(certificate_last_update_date = safe_read_chronology_table(certificate_number)$`Order Date` %>%
+           mdy() %>%
+           format('%m/%d/%y')) %>%
+  mutate(kml_most_recent_update_date = str_extract(kml_most_recent_update_included, "[\\d]{1,2}\\/[\\d]{2}\\/([\\d]{4}|[\\d]{2})") %>%
+           mdy() %>%
+           format('%m/%d/%y')) %>%
+  mutate(kml_has_latest_certificate_update = if_else(
+    is.na(kml_most_recent_update_date) | is.na(certificate_last_update_date),
+    NA,
+    str_equal(kml_most_recent_update_date, certificate_last_update_date)
+  )) %>%
+  ungroup()
