@@ -3,6 +3,7 @@ library(rvest)
 library(glue)
 library(sf)
 library(httr)
+library(lubridate, warn.conflicts = FALSE)
 dir.create("data", showWarnings = FALSE)
 
 certificates_csv <- read_csv("rca_electric_certificates.csv") %>%
@@ -108,10 +109,11 @@ for (i in 1:nrow(certificates_csv)) {
 read_kml_description <- function(cert_num) {
   kml_path <- glue("data/{cert_num}-servicearea.kml")
   stopifnot(file.exists(kml_path))
-  desc <- st_read(kml_path, quiet = TRUE)[1, ]$Description # A few KMLs for Doyon Electric utilities have duplicated description fields (one in HTML for some reason, just get the first one for now). TODO test length and make sure they are identical
+  desc <- st_read(kml_path, quiet = TRUE)[1, ]$Description # A few KMLs for Doyon Electric utilities have duplicated description fields (one in HTML for some reason, just get the first one for now). TODO test length of duplicates to make sure they are identical. Low priority since this only happens once or twice.
   if (startsWith(desc, "<html")) {
     # https://rca.alaska.gov/RCAWeb/Certificate/CertificateDetails.aspx?id=c89cf393-1bf6-483d-a777-e9af4b204710
     # https://www.statology.org/r-find-character-in-string/
+    # TODO: change to stringr
     start_index <- unlist(gregexpr("Granted to:", desc))[1]
     end_index <- unlist(gregexpr("</td> </tr> </table> </td> </tr> </table>", desc))[1] - 1
     new_desc <- substr(desc, start_index, end_index) %>%
@@ -124,6 +126,68 @@ read_kml_description <- function(cert_num) {
 }
 
 safe_read_kml_description <- possibly(read_kml_description, otherwise = NA_character_)
+
+read_chronology_table <- function(cert_num) {
+  chronology_path <- glue("data/{cert_num}-certificate-chronology.html")
+  stopifnot(file.exists(chronology_path))
+  chronology_table <- read_html(chronology_path) %>%
+    html_element("table.RCAGrid") %>%
+    html_table() # Table is already sorted with most recent events first
+  if (cert_num == 13) {
+    # Two entries in GVEA's chronology table are missing dates. We will add them back manually.
+    # https://rca.alaska.gov/RCAWeb/Dockets/DocketDetails.aspx?id=7CC1B7AC-C9BB-4170-A9DB-28310A46DAF8
+    chronology_table <- chronology_table %>%
+      mutate(`Order Date` = ifelse(Order == "5E", "10/04/2012", `Order Date`)) %>%
+      mutate(`Order Date` = ifelse(Order == "5EE", "04/09/2013", `Order Date`)) 
+  }
+  chronology_table <- chronology_table %>%
+    mutate(`Order Date` = if_else(`Order Date` == "", "1/1/1900", `Order Date`)) # TODO: fix this bad solution.
+    # Not sure if this is good to do or not, but missing date should not be sorted first/newest
+  return(chronology_table)
+}
+
+certificates.chronology <- data.frame()
+
+for (i in 1:nrow(certificates_csv)) {
+  cur_certificate_number <- certificates_csv[i, ]$certificate_number
+  if (i > 1 && cur_certificate_number == certificates_csv[i-1, ]$certificate_number) {
+    # Some utilities have two rows in the CSV. Until that is fixed, skip adding the same chronology table twice.
+    next
+  }
+  certificates.chronology <- certificates.chronology %>% 
+    rbind(read_chronology_table(cur_certificate_number) %>%
+            mutate(`Order Date` = mdy(`Order Date`)) %>%
+            arrange(`Order Date`) %>%
+            mutate(Certificate = cur_certificate_number) %>%
+            select(c(Certificate, `Docket Number`, Order, `Order Date`), everything()))
+}
+
+convert_two_digit_years <- function(x, year=1963) {
+  # The oldest year appearing in RCA chronologies is 1964
+  # https://stackoverflow.com/questions/12323693/convert-two-digit-years-to-four-digit-years-with-correct-century/12957909#12957909
+  m <- year(x) %% 100
+  year(x) <- ifelse(m > year %% 100, 1900+m, 2000+m)
+  return(x)
+}
+
+kml_has_newest_service_area_updates <- function(cert_num, kml_update_date) {
+  chronology_entries <- certificates.chronology %>%
+    filter(Certificate == cert_num)
+  if ((chronology_entries %>% tail(n=1))$`Order Date` < kml_update_date) {
+    # If the KML has a newer date than the newest entry in the chronology, this means the chronology on RCA's site is incomplete and missing an entry.
+    # We will have to manually check the RCA site in this scenario. 
+    warning(glue("Certificate {cert_num}'s chronology should have an entry dated {kml_update_date} but doesn't. Maybe it can be found elsewhere on the RCA site."))
+    return(NA)
+  }
+  newer_service_area_changes <- chronology_entries %>%
+    filter(`Order Date` > kml_update_date) %>%
+    filter(!Type == "Deregulated", !Type == "Controlling Interest")
+  if (nrow(newer_service_area_changes) > 0) {
+    return(FALSE) # False, there are updates newer than the KML in the certificate chronology
+  } else {
+    return(TRUE) # True, the KML has the newest updates
+  }
+}
 
 certificates <- certificates_csv %>%
   rowwise() %>%
@@ -145,4 +209,25 @@ certificates <- certificates_csv %>%
   mutate(name_match = tolower(certificate_name) == tolower(kml_utility_name)) %>%
   rename(alt_name = kml_utility_name) %>%
   mutate(alt_name = ifelse(name_match, NA_character_, alt_name)) %>%
-  select(-c(name_match, kml_utility_type)) # Don't really need these right now
+  select(-c(name_match, kml_utility_type)) %>% # Don't really need these right now
+  rowwise() %>%
+  mutate(certificate_last_update_date = (certificates.chronology %>% 
+                                           filter(Certificate == certificate_number) %>% 
+                                           tail(n = 1))$`Order Date`) %>%
+           #format('%m/%d/%y')) %>% # Temporarily change to MM/DD/YY so we don't get issues like xx/xx/64 (in KML descriptions) being converted to 2064-xx-xx. This will break in a few decades though. Fixed by convert_two_digit_years function
+  mutate(certificate_last_update_type = (certificates.chronology %>% 
+                                           filter(Certificate == certificate_number) %>% 
+                                           tail(n = 1))$Type) %>%
+  mutate(certificate_last_update_description = (certificates.chronology %>% 
+                                                  filter(Certificate == certificate_number) %>% 
+                                                  tail(n = 1))$Comment) %>%
+  mutate(kml_most_recent_update_date = str_extract(kml_most_recent_update_included, "[\\d]{1,2}\\/[\\d]{2}\\/([\\d]{4}|[\\d]{2})") %>%
+           mdy() %>%
+           convert_two_digit_years()) %>%
+           #format('%m/%d/%y')) %>%
+  mutate(kml_has_latest_certificate_update = ifelse(
+    is.na(kml_most_recent_update_date), 
+    NA,
+    kml_has_newest_service_area_updates(certificate_number, kml_most_recent_update_date))) %>%
+  ungroup()
+   # TODO: remove duplicates. Should just remove them at beginning when reading from csv
