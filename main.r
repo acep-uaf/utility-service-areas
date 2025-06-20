@@ -85,7 +85,16 @@ operator_ids <- c(
   # TDX Sand Point Generating, LLC, subsidiary of TDX Holdings, purchases wind-power generated electric energy from the project
   # TDX Power and TDX Holdings are subsidiaries of Tanadgusix Corporation
   # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=edfd7897-9f53-491b-928c-757dd28efd3d
-  735
+  735,
+  # Kwaan Electric Transmission Intertie Cooperative, Inc.
+  # "The HECLA Greens Creek Mine (GCMC) is connected to the Juneau electricity distribution network via overhead and undersea transmission
+  # between West Juneau to the mine site on Admiralty Island. The undersea cable and overhead transmission on Admiralty Island are owned and
+  # operated by Kwaan Electric Transmission Intertie Cooperative (KWETICO), which receives a wheeling charge for the energy traveling through 
+  # their transmission infrastructure to the mine. This extension is intended to one day connect to Hoonah." 
+  # "[Alaska Electric Light and Power Company] shall include in its bills to [the mine], and [the mine] shall pay to AELP... transmission charges assessed to AELP by" KWETICO
+  # https://juneau.org/wp-content/uploads/2019/03/CBJ-Energy-Strategy-Approved.pdf
+  # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=277E0D76-E646-4210-BFAA-2E81AADED4FB
+  710
 )
 
 # Delete rows representing certificates that are inactive but mistakenly are still assigned active status by RCA
