@@ -18,7 +18,7 @@ certificates_csv <- read_csv("rca_electric_certificates.csv") %>%
 # RCA issues certificates to utilities, and also issues certificates to operators, who sell power to utilities, but don't actually service any households or customers.
 # Operators do not have "service areas" and the ones assigned by RCA do not make very much sense. 
 # For example, it might be a circle around a wind farm or a random spot in a lake.
-# We need to add this field so we can easily distinguish between these two types of entities, enabling us to exclude the psuedo-service areas of operators, and add operators to a point layer instead of representing them with polygons.
+# We need to add this field so we can easily distinguish between these two types of entities, enabling us to exclude the psuedo-service areas of operators.
 # https://github.com/acep-uaf/utility-service-areas/issues/18
 
 operator_ids <- c(
