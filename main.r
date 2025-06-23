@@ -12,6 +12,109 @@ certificates_csv <- read_csv("rca_electric_certificates.csv") %>%
   distinct(certificate_number, .keep_all = TRUE) # Quick and dirty way to get rid of duplicate rows that refer to the same certificate that is "co-owned" by two different entities. This just keeps the first row. The certificate url is the same in both so it doesn't matter which one is kept.
 # filter(`utility_type` == "Electric") #Filter to electric utilities
 
+# This code adds a new field to certificates_csv - "entity_type" (utility or operator)
+# An operator produces electricity and sells all its electric output to a utility or utilities.
+# A utility distributes/delivers electricity to the customers who live in its service area. Most utilities in Alaska generate some or all of their own electricity (in other words, not all utilities purchase electricity from operators).
+# RCA issues certificates to utilities, and also issues certificates to operators, who sell power to utilities, but don't actually service any households or customers.
+# Operators do not have "service areas" and the ones assigned by RCA do not make very much sense. 
+# For example, it might be a circle around a wind farm or a random spot in a lake.
+# We need to add this field so we can easily distinguish between these two types of entities, enabling us to exclude the psuedo-service areas of operators.
+# https://github.com/acep-uaf/utility-service-areas/issues/18
+
+operator_ids <- c(
+  # Gustavus Utility Service, Inc., subsidiary of Alaska Power & Telephone Company, owns and operates the Falls Creek hydroelectric facilities.
+  # Alaska Power Company (also a subsidiary of Alaska Power & Telephone Company) purchases "all of the electric energy and capacity" of the Falls Creek Power Facilities
+  # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=6d6ff0db-240d-4fa5-8314-8fd8a9a33588
+  # https://docs.publicnow.com/viewDoc?filename=201404%5CEXT%5CE3D47B50365CCC308D7ADD59726CC880820447F4_EEC5F078E9ECE7B508DEF511BE8F31137112704A.PDF
+  765,
+  # Alaska Industrial Development & Export Authority owns the Snettisham Hydroelectric Project. The project is operated and maintained by Alaska Electric Light and Power Company, who also purchases Snettisham Hydro power
+  # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=dc64d68e-d639-499e-9d3b-2f6325ba66a1
+  # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=E7E05BD9-783C-4587-BEAA-C12D590D7741
+  549,
+  # BBL Hydro, Inc., subsidiary of Alaska Power & Telephone Company, owns and operates the Black Bear Lake hydroelectric project
+  # Alaska Power Company purchases power from the project
+  # https://lowimpacthydro.org/lihi-certificate-22-black-bear-lake-hydroelectric-project-alaska/
+  # https://docs.publicnow.com/viewDoc?filename=201404%5CEXT%5CE3D47B50365CCC308D7ADD59726CC880820447F4_EEC5F078E9ECE7B508DEF511BE8F31137112704A.PDF
+  573,
+  # Municipality of Anchorage d/b/a Anchorage Hydropower owns 53.33% of the Eklutna Hydroelectric Project
+  # Anchorage Hydropower sells all its electric output to Chugach Electric Association (CEA) and Matanuska Electric Association (MEA)
+  # https://eklutnahydro.com/
+  # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=ea36e858-51ee-43e4-9baa-232206f89f31
+  # https://www.muni.org/departments/budget/utilitiesenterprise/2021%20utilities/2021%20ppsd%20ent%20util/web%2001%20-%20anchorage%20hydropower%20utility.pdf
+  780,
+  # Alaska Electric and Energy Cooperative, Inc.
+  # "All of [Homer Electric Association]’s power is supplied by Alaska Electric & Energy Cooperative, Inc. (AEEC), a subsidiary of HEA that holds title
+  # to substantially all of the transmission lines and substations used to serve HEA’s members and handles wholesale power purchases on behalf of HEA." 
+  # https://www.cooperative.com/programs-services/bts/radwind/Documents/RADWIND-Case-Study-Homer-Electric-July-2021.pdf
+  # https://www.homerelectric.com/my-cooperative/board-of-directors/alaska-electric-energy-cooperative-aeec/
+  640,
+  # TDX St. Paul Wind, LLC is a subsidiary of Tanadgusix Corporation (TDX Corp) 
+  # TDX "generate[s] and sell[s] wholesale electric power to the City of St. Paul"
+  # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=197c2346-7987-4d1b-ae44-b76a6632bab1
+  749,
+  # Goat Lake Hydro, Inc., subsidiary of Alaska Power & Telephone Company, owns and operates the Goat Lake hydroelectric project
+  # Alaska Power Company purchases power from the project
+  # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=5fc44482-1a65-4425-8e09-f432c00b3800
+  # https://lowimpacthydro.org/lihi-certificate-26-goat-lake-hydroelectric-project-alaska/
+  521,
+  # Haida Energy, Inc., a joint venture between Haida Corp and AP&T, owns and operates the Hiilangaay hydroelectric project (formerly named Reynolds Creek)
+  # Alaska Power Company purchases power from the project
+  # https://aws.state.ak.us/OnlinePublicNotices/Notices/Attachment.aspx?id=117400
+  # http://www.haidacorporation.com/haida-energy.html
+  760,
+  # Alaska Environmental Power, LLC, owns and operates the Delta Wind Farm near Delta Junction, Alaska
+  # Golden Valley Electric Association purchases the energy output from the project
+  # https://akenergyauthority.org/Portals/0/Programs/Wind/Case%20Studies/DeltaAreaWindTurbines2016.pdf
+  # https://www.gvea.com/services/energy/sources-of-power/
+  742,
+  # Alaska Electric Generation & Transmission Cooperative, Inc
+  # It is currently a single member G&T co-op made up of Matanuska Electric Association alone, Homer Electric Association used to be part of it until the creation of AEEC.
+  # Chugach used to sell power to AEG&T who sold it to MEA, but that ended in 2015
+  # https://www.sec.gov/Archives/edgar/data/878004/000087800415000007/c004-20141231x10k.htm
+  # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=71325606-5b54-4b3e-8768-4b5ced0135ed
+  # https://www.homerelectric.com/wp-content/uploads/AEEC-HEA-History.pdf
+  # https://zenodo.org/records/14908275/files/ACEP_Railbelt%20G&T%20History_2025.pdf?download=1
+  345,
+  # Aurora Energy, LLC owns and operates a coal-fired power plant in Fairbanks
+  # Golden Valley Electric Association purchases power from the plant
+  # https://fnsb.gov/DocumentCenter/View/1155/Presentation--District-Heating-Aurora-Energy-PDF
+  # https://usibelli.com/company/customers
+  # https://www.gvea.com/services/energy/sources-of-power/
+  520,
+  # Aleutian Wind Energy, LLC, subsidiary of TDX Power, owns and operates a wind power project in Sand Point, Alaska
+  # TDX Sand Point Generating, LLC, subsidiary of TDX Holdings, purchases wind-power generated electric energy from the project
+  # TDX Power and TDX Holdings are subsidiaries of Tanadgusix Corporation
+  # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=edfd7897-9f53-491b-928c-757dd28efd3d
+  735,
+  # Kwaan Electric Transmission Intertie Cooperative, Inc.
+  # "The HECLA Greens Creek Mine (GCMC) is connected to the Juneau electricity distribution network via overhead and undersea transmission
+  # between West Juneau to the mine site on Admiralty Island. The undersea cable and overhead transmission on Admiralty Island are owned and
+  # operated by Kwaan Electric Transmission Intertie Cooperative (KWETICO), which receives a wheeling charge for the energy traveling through 
+  # their transmission infrastructure to the mine. This extension is intended to one day connect to Hoonah." 
+  # "[Alaska Electric Light and Power Company] shall include in its bills to [the mine], and [the mine] shall pay to AELP... transmission charges assessed to AELP by" KWETICO
+  # https://juneau.org/wp-content/uploads/2019/03/CBJ-Energy-Strategy-Approved.pdf
+  # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=277E0D76-E646-4210-BFAA-2E81AADED4FB
+  710
+)
+
+# Delete rows representing certificates that are inactive but mistakenly are still assigned active status by RCA
+
+inactive_ids <- c(
+  # https://github.com/acep-uaf/utility-service-areas/issues/23
+  59,
+  # https://github.com/acep-uaf/utility-service-areas/issues/15
+  71,
+  # https://github.com/acep-uaf/utility-service-areas/issues/19
+  523
+)
+
+certificates_csv <- certificates_csv %>%
+  mutate(entity_type = ifelse(
+    certificate_number %in% operator_ids,
+    "operator",
+    "utility")) %>%
+  filter(!(certificate_number %in% inactive_ids))
+
 s <- session("https://rca.alaska.gov/RCAWeb/home.aspx")
 
 certs_missing_kml_files <- numeric(length = 0)
@@ -252,4 +355,4 @@ merged <- bind_rows(sf_list) %>%
 #tm_shape(merged) +
 #  tm_polygons(fill_alpha=0.5)
 
-st_write(merged %>% filter(utility_type == "Electric"), glue("test-{as.integer(Sys.time())}.geojson"))
+st_write(merged %>% filter(utility_type == "Electric", entity_type == "utility"), glue("test-{as.integer(Sys.time())}.geojson"))
