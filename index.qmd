@@ -3,6 +3,7 @@ echo: false
 format:
   html:
     page-layout: custom
+    # css: style.css
 ---
 
 
@@ -12,6 +13,7 @@ stdlib = require("@observablehq/stdlib")
 d3 = require("d3@7")
 
 L = require('leaflet@1.9.4')
+
 html`<link href='${resolve('leaflet@1.2.0/dist/leaflet.css')}' rel='stylesheet' />`
 
 bootstrap=require("bootstrap")
@@ -23,26 +25,57 @@ bootstrap=require("bootstrap")
 service_areas = FileAttachment("test-1750715169.geojson").json()
 ```
 
+```{ojs}
+toggle_collapse = function () {
+  const sidebar = document.querySelector('.collapse.panel-sidebar')
+  if (sidebar.classList.contains('show')) {
+     console.log('Already showing sidebar')
+  }
+  else {
+    //const collapseList = [...collapseElementList].map(collapseEl => new bootstrap.Collapse(collapseEl))
+    new bootstrap.Collapse(sidebar, {show:1})
+  }
+}
+```
+
+:::::: {.panel-sidebar .collapse .collapse-horizontal}
+```{ojs}
+viewof sidebar_message = DOM.element('p');
+
+```
+::::::
+
+:::::: {.panel-fill}
+
+```{ojs}
+viewof container = DOM.element('div', { style: `height:85vh` });
+```
 
 ```{ojs}
 map = {
-  let container = DOM.element('div', { style: `height:85vh` });
-  yield container;
 
   // create map object
-  let map = L.map(container).setView([62.945279601222396, -155.5946697727831], 5);
+  let map = L.map(viewof container).setView([62.945279601222396, -155.5946697727831], 5);
 
   // add basemap
   var basemap = L.tileLayer(
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', 
     {attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'});
   basemap.addTo(map);
+  
 
   // https://leafletjs.com/examples/geojson/
   L.geoJSON(service_areas)
   .bindPopup(function (layer) {
+    viewof sidebar_message.innerText = layer.feature.properties.certificate_name;
+    toggle_collapse();
     return layer.feature.properties.certificate_name;
   }).addTo(map);
+  
+
+  
+
 }
 
 ```
+::::::

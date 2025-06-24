@@ -1,5 +1,8 @@
  project:
    type: website
+   resources:
+    - L.Control.Sidebar.css
+    - L.Control.Sidebar.js
 
  website:
    title: "test-quarto-site"
