@@ -6,3 +6,5 @@ data/*
 *.geojson
 *.Rproj.user
 *.Rhistory
+/.quarto/
+/_site/
