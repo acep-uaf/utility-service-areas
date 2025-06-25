@@ -1,0 +1,32 @@
+.panel-sidebar:not(.show)+.panel-fill.panel-grid {
+  grid-column: 1 / -1 !important;
+  
+}
+
+.panel-grid:has(.show) {
+  display: grid;
+}
+
+
+.panel-fill.panel-grid {
+  transition: transform 0.3s ease;
+  transform: translateX(0);
+}
+
+.panel-sidebar.show + .panel-fill.panel-grid {
+  transform: translateX(1px);
+}
+
+
+/* .collapse,
+  .collapsing {
+    opacity: 0;
+    overflow: hidden;
+    height: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .collapse.show {
+    opacity: 1;
+    height: auto;
+  }*/
