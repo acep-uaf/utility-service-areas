@@ -343,12 +343,20 @@ certificates <- certificates_csv %>%
 
 # TODO: warning, kmls for certs_missing_kml_files are missing 
 
+sf_use_s2(TRUE)
+
 file_list <- list.files("data/", pattern = "-servicearea.kml$", full.names = TRUE)
 sf_list <- map(file_list, ~st_read(.x, quiet = TRUE))
 merged <- bind_rows(sf_list) %>%
   mutate(certificate_number = as.numeric(str_extract(Name, regex("(?!Certificate No. )[\\d]+")))) %>%
   select(-c(Name, Description)) %>%
-  inner_join(certificates, by=join_by(certificate_number))
+  mutate(geometry = st_make_valid(geometry)) %>%
+  group_by(certificate_number) %>%
+  summarise(geometry = st_union(geometry)) %>%
+  ungroup() %>%
+  # mutate(geometry = st_cast(geometry, "POLYGON")) %>% # Not sure if we should do this. But it's easier to work with (pan/zoom to/highlight) individual polygons than a multipolygon in leaflet. Especially discontiguous ones like AVEC
+  inner_join(certificates, by=join_by(certificate_number)) %>%
+  select(-geometry,everything()) # Move geometry to end
 
 #sf_use_s2(FALSE)
 #tmap_mode("view")

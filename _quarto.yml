@@ -2,7 +2,7 @@
    type: website
 
  website:
-   title: "test-quarto-site"
+   title: "Service area explorer"
    navbar:
      left:
        - href: index.qmd
@@ -14,8 +14,15 @@
      theme:
        light: flatly
        dark: darkly
-     # css: styles.css
+     css: styles.css
      toc: true
      respect-user-color-scheme: true
+ execute:
+  eval: true
+  echo: false
+  message: false
+  warning: false
+  output: true
+  include: true
 
  editor: visual
