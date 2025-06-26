@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Service area explorer</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-2fef5ea3f8957b3e4ecc936fc74692ca.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-6bdd2aebeb936dcddaa5f935a5de481c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-ccd81253fefb92e9cd3f9eb5b5d87b54.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-6bdd2aebeb936dcddaa5f935a5de481c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script type="module" src="site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Service area explorer</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-layout-custom page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+<!-- main -->
+
+
+
+
+
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="10" data-source-offset="-72"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 9;"><span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>stdlib <span class="op">=</span> <span class="pp">require</span>(<span class="st">"@observablehq/stdlib"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> <span class="pp">require</span>(<span class="st">"d3@7"</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> <span class="pp">require</span>(<span class="st">'leaflet@1.9.4'</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">html</span><span class="vs">`&lt;link href='</span><span class="sc">${</span><span class="fu">resolve</span>(<span class="st">'leaflet@1.2.0/dist/leaflet.css'</span>)<span class="sc">}</span><span class="vs">' rel='stylesheet' /&gt;`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-4" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="17" data-source-offset="-250"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 16;"><span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>bootstrap<span class="op">=</span><span class="pp">require</span>(<span class="st">"bootstrap"</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>Papa <span class="op">=</span> <span class="pp">require</span>(<span class="st">"papaparse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="24" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 23;"><span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>service_areas <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"service-areas.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb4" data-startfrom="33" data-source-offset="-79"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 32;"><span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>show_sidebar <span class="op">=</span> <span class="kw">function</span> () {</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">'#myCollapse'</span>)<span class="op">.</span><span class="at">classList</span><span class="op">.</span><span class="fu">add</span>(<span class="st">'show'</span>)<span class="op">;</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> <span class="bu">event</span> <span class="op">=</span> <span class="kw">new</span> <span class="bu">Event</span>(<span class="st">'sidebar-opened'</span>)<span class="op">;</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  <span class="bu">window</span><span class="op">.</span><span class="fu">dispatchEvent</span>(<span class="bu">event</span>)<span class="op">;</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">'Sidebar opened'</span>)<span class="op">;</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  <span class="co">//viewof sidebar_message.querySelector(".btn-close").onclick = () =&gt; { hide_sidebar();  };</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>hide_sidebar <span class="op">=</span> <span class="kw">function</span> () {</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>  <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">'#myCollapse'</span>)<span class="op">.</span><span class="at">classList</span><span class="op">.</span><span class="fu">remove</span>(<span class="st">'show'</span>)<span class="op">;</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> <span class="bu">event</span> <span class="op">=</span> <span class="kw">new</span> <span class="bu">Event</span>(<span class="st">'sidebar-closed'</span>)<span class="op">;</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>  <span class="bu">window</span><span class="op">.</span><span class="fu">dispatchEvent</span>(<span class="bu">event</span>)<span class="op">;</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">'Sidebar closed'</span>)<span class="op">;</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="panel-grid layout-sidebar ms-md-0 layout-sidebar-left">
+<div id="myCollapse" class="panel-sidebar collapse collapse-horizontal show card bg-light p-2 g-col-24 g-col-lg-7">
+<div class="cell card bg-light p-2 g-col-24 g-col-lg-7">
+<div class="sourceCode cell-code hidden" id="cb5" data-startfrom="54" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 53;"><span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>button_code <span class="op">=</span> <span class="vs">`&lt;button type="button" class="btn-close position-absolute top-0 end-0 m-2" aria-label="Close" onclick="(</span><span class="sc">${</span>hide_sidebar<span class="sc">}</span><span class="vs">)()"&gt;&lt;/button&gt;`</span><span class="op">;</span></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>welcome_message <span class="op">=</span> <span class="vs">`</span><span class="sc">${</span>button_code<span class="sc">}</span><span class="vs">Welcome to my tool&lt;br&gt;&lt;br&gt;Try browsing around the map and clicking on a utility service area `</span><span class="op">;</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>mutable name <span class="op">=</span> <span class="st">""</span><span class="op">;</span> <span class="co">// </span><span class="al">TODO</span><span class="co">: find a way to do this without mutable</span></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>mutable cpcn_url <span class="op">=</span> <span class="st">""</span><span class="op">;</span></span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a><span class="co">// Example data — replace with actual selected feature</span></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>mutable should_show_welcome_message <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>viewof sidebar_message <span class="op">=</span> should_show_welcome_message <span class="op">?</span> <span class="fu">html</span><span class="vs">`&lt;p&gt;</span><span class="sc">${</span>welcome_message<span class="sc">}</span><span class="vs">&lt;/p&gt;`</span> <span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;div class="position-relative p-3"&gt;</span></span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a><span class="vs">  </span><span class="sc">${</span>button_code<span class="sc">}</span></span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;h5 class="mb-3"&gt;</span><span class="sc">${</span>name<span class="sc">}</span><span class="vs">&lt;/h5&gt;</span></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;ul class="list-group list-group-flush"&gt;</span></span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;li&gt;View &lt;a href="</span><span class="sc">${</span>cpcn_url<span class="sc">}</span><span class="vs">" target="_blank"&gt;certificate information&lt;/a&gt; on the Regulatory Commission of Alaska website&lt;/li&gt;</span></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/ul&gt;</span></span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/div&gt;`</span><span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="panel-fill panel-grid g-col-24 g-col-lg-17 pt-3 pt-lg-0">
+<div class="g-col-24">
+<div class="panel-fill">
+<div class="panel-fill panel-grid">
+<div class="g-col-24">
+<div class="cell panel-fill">
+<div class="sourceCode cell-code hidden" id="cb6" data-startfrom="87" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 86;"><span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>viewof container <span class="op">=</span> DOM<span class="op">.</span><span class="fu">element</span>(<span class="st">'div'</span><span class="op">,</span> { <span class="dt">style</span><span class="op">:</span> <span class="vs">`height:85vh`</span> })<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb7" data-startfrom="92" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 91;"><span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a><span class="co">// </span><span class="al">TODO</span><span class="co"> split into smaller cells</span></span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a>map <span class="op">=</span> {</span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a>  <span class="co">// create map object</span></span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> map <span class="op">=</span> L<span class="op">.</span><span class="fu">map</span>(viewof container)<span class="op">.</span><span class="fu">setView</span>([<span class="fl">62.945279601222396</span><span class="op">,</span> <span class="op">-</span><span class="fl">155.5946697727831</span>]<span class="op">,</span> <span class="dv">5</span>)<span class="op">;</span></span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a>  <span class="co">// https://github.com/kbvernon/hndsr-watersheds/blob/main/observable-map.qmd#L122</span></span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a>  <span class="co">// add basemap</span></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a>  <span class="bu">window</span><span class="op">.</span><span class="at">___MAP</span> <span class="op">=</span> map<span class="op">;</span></span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a>  map<span class="op">.</span><span class="fu">whenReady</span>(()<span class="kw">=&gt;</span> {</span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a>    <span class="co">//console.log('whenReady fired');</span></span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a>    <span class="co">//fetch('whenreadyfired.com')</span></span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a>    <span class="co">//show_sidebar();</span></span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Tell leaflet that we closed/opened sidebar which caused map width to change</span></span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addEventListener</span>(<span class="st">'sidebar-closed'</span><span class="op">,</span> ()<span class="kw">=&gt;</span>{</span>
+<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">'map recv sidebar close'</span>)<span class="op">;</span></span>
+<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a>    previouslyClickedLayer<span class="op">.</span><span class="fu">setStyle</span>(myStyle)<span class="op">;</span></span>
+<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a>    previouslyClickedLayer <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a>    map<span class="op">.</span><span class="fu">invalidateSize</span>()<span class="op">;</span></span>
+<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addEventListener</span>(<span class="st">'sidebar-opened'</span><span class="op">,</span> ()<span class="kw">=&gt;</span>{</span>
+<span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">'map recv sidebar open'</span>)<span class="op">;</span></span>
+<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a>    map<span class="op">.</span><span class="fu">invalidateSize</span>()<span class="op">;</span></span>
+<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> osm <span class="op">=</span> L<span class="op">.</span><span class="fu">tileLayer</span>(<span class="st">'https://tile.openstreetmap.org/{z}/{x}/{y}.png'</span><span class="op">,</span> {</span>
+<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a>    <span class="dt">maxZoom</span><span class="op">:</span> <span class="dv">19</span><span class="op">,</span></span>
+<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a>    <span class="dt">attribution</span><span class="op">:</span> <span class="st">'&amp;copy; &lt;a href="https://openstreetmap.org/copyright"&gt;OpenStreetMap contributors&lt;/a&gt;'</span>})<span class="op">;</span></span>
+<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a>  <span class="co">// osm.addTo(map);</span></span>
+<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> esri_topo <span class="op">=</span> L<span class="op">.</span><span class="fu">tileLayer</span>(</span>
+<span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'</span><span class="op">,</span> </span>
+<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">attribution</span><span class="op">:</span> <span class="st">'Tiles &amp;copy; Esri &amp;mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'</span>})<span class="op">;</span></span>
+<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a>  <span class="co">// esri_topo.addTo(map);</span></span>
+<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a>  <span class="co">// https://geoportal.alaska.gov/portal/home/item.html?id=d462231cc1454e1abb2dccd9a709a476</span></span>
+<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> ak_2020_imagery <span class="op">=</span> L<span class="op">.</span><span class="fu">tileLayer</span>(</span>
+<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://geoportal.alaska.gov/arcgis/rest/services/ahri_2020_rgb_cache/MapServer/tile/{z}/{y}/{x}?blankTile=false'</span><span class="op">,</span> {</span>
+<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a>    <span class="co">//layers: '0',</span></span>
+<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a>        <span class="co">//format: 'image/png',</span></span>
+<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a>    <span class="dt">attribution</span><span class="op">:</span> <span class="st">'Dynamic Mosaic &amp;copy; 2020 Maxar Technologies Inc., Alaska Geospatial Office, USGS'</span>})<span class="op">;</span></span>
+<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a>  ak_2020_imagery<span class="op">.</span><span class="fu">addTo</span>(map)<span class="op">;</span></span>
+<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> aedg_communities <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a>  L<span class="op">.</span><span class="at">control</span><span class="op">.</span><span class="fu">layers</span>(</span>
+<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a>      <span class="st">"OpenStreetMap"</span><span class="op">:</span> osm<span class="op">,</span></span>
+<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a>      <span class="st">"ESRI Topographic"</span><span class="op">:</span> esri_topo<span class="op">,</span></span>
+<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Alaska High Resolution Imagery (50cm)"</span><span class="op">:</span> ak_2020_imagery</span>
+<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a>    <span class="kw">null</span><span class="op">,</span></span>
+<span id="cb7-148"><a href="#cb7-148" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">position</span><span class="op">:</span> <span class="st">'topleft'</span>}</span>
+<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a>  )<span class="op">.</span><span class="fu">addTo</span>(map)<span class="op">;</span></span>
+<span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a>  L<span class="op">.</span><span class="at">control</span><span class="op">.</span><span class="fu">scale</span>({<span class="dt">imperial</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">metric</span><span class="op">:</span> <span class="kw">true</span>})<span class="op">.</span><span class="fu">addTo</span>(map)<span class="op">;</span></span>
+<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> communityMarkers  <span class="op">=</span> <span class="kw">new</span> L<span class="op">.</span><span class="fu">FeatureGroup</span>()<span class="op">;</span></span>
+<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a>  <span class="co">// https://github.com/HandsOnDataViz/leaflet-map-csv/blob/main/index.html</span></span>
+<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fetch</span>(<span class="st">'https://raw.githubusercontent.com/acep-aedg/aedg-data-pond/refs/heads/main/data/public/public_communities.csv'</span>)</span>
+<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">then</span>((response) <span class="kw">=&gt;</span> response<span class="op">.</span><span class="fu">text</span>())</span>
+<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">then</span>((csvString) <span class="kw">=&gt;</span> {</span>
+<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> data <span class="op">=</span> Papa<span class="op">.</span><span class="fu">parse</span>(csvString<span class="op">,</span> {<span class="dt">header</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">dynamicTyping</span><span class="op">:</span> <span class="kw">true</span>})<span class="op">.</span><span class="at">data</span><span class="op">;</span></span>
+<span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a>    <span class="co">// For each row in data, create a marker and add it to the map</span></span>
+<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a>    <span class="co">// For each row, columns `Latitude`, `Longitude`, and `Title` are required</span></span>
+<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (<span class="kw">let</span> i <span class="kw">in</span> data) {</span>
+<span id="cb7-164"><a href="#cb7-164" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> row <span class="op">=</span> data[i]<span class="op">;</span></span>
+<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a>        <span class="co">/*let marker = L.circleMarker([row.latitude, row.longitude], {</span></span>
+<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a><span class="co">          radius: 4,</span></span>
+<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a><span class="co">          opacity: 1,</span></span>
+<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a><span class="co">          color: '#000',</span></span>
+<span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a><span class="co">          stroke: false,</span></span>
+<span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a><span class="co">          fillOpacity: 0.75</span></span>
+<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a><span class="co">        }).bindTooltip(row.name);*/</span></span>
+<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> marker <span class="op">=</span> L<span class="op">.</span><span class="fu">marker</span>([row<span class="op">.</span><span class="at">latitude</span><span class="op">,</span> row<span class="op">.</span><span class="at">longitude</span>]<span class="op">,</span> {</span>
+<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a>          <span class="dt">opacity</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a>          <span class="dt">color</span><span class="op">:</span> <span class="st">'red'</span></span>
+<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a>        })<span class="op">.</span><span class="fu">bindTooltip</span>(row<span class="op">.</span><span class="at">name</span>)<span class="op">;</span></span>
+<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a>        communityMarkers<span class="op">.</span><span class="fu">addLayer</span>(marker)<span class="op">;</span></span>
+<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a>        <span class="co">//marker.addTo(map);</span></span>
+<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a>  <span class="co">// https://leafletjs.com/examples/geojson/</span></span>
+<span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Add this last?</span></span>
+<span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> myStyle <span class="op">=</span> {</span>
+<span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a>    <span class="st">"color"</span><span class="op">:</span> <span class="st">"#ff932e"</span><span class="op">,</span></span>
+<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a>    <span class="co">//"weight": 5,</span></span>
+<span id="cb7-188"><a href="#cb7-188" aria-hidden="true" tabindex="-1"></a>    <span class="co">//"opacity": 0.65</span></span>
+<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> highlight <span class="op">=</span> {</span>
+<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a>    <span class="st">"color"</span><span class="op">:</span> <span class="st">"#FF0000"</span></span>
+<span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> previouslyClickedLayer <span class="op">=</span> <span class="kw">null</span><span class="op">;</span> </span>
+<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a>  L<span class="op">.</span><span class="fu">geoJSON</span>(service_areas<span class="op">,</span> {</span>
+<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a>    <span class="dt">style</span><span class="op">:</span> myStyle<span class="op">,</span></span>
+<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a>    <span class="dt">onEachFeature</span><span class="op">:</span> <span class="kw">function</span> (feature<span class="op">,</span> layer) {</span>
+<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a>      layer<span class="op">.</span><span class="fu">on</span>(<span class="st">'click'</span><span class="op">,</span> <span class="kw">function</span> (e) {</span>
+<span id="cb7-201"><a href="#cb7-201" aria-hidden="true" tabindex="-1"></a>        <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">'Feature clicked:'</span>)<span class="op">;</span></span>
+<span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a>        <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(feature)<span class="op">;</span></span>
+<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (previouslyClickedLayer <span class="op">&amp;&amp;</span> previouslyClickedLayer <span class="op">!==</span> layer) {</span>
+<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a>          previouslyClickedLayer<span class="op">.</span><span class="fu">setStyle</span>(myStyle)<span class="op">;</span></span>
+<span id="cb7-205"><a href="#cb7-205" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb7-206"><a href="#cb7-206" aria-hidden="true" tabindex="-1"></a>        layer<span class="op">.</span><span class="fu">setStyle</span>(highlight)<span class="op">;</span></span>
+<span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a>        previouslyClickedLayer <span class="op">=</span> layer<span class="op">;</span></span>
+<span id="cb7-208"><a href="#cb7-208" aria-hidden="true" tabindex="-1"></a>        map<span class="op">.</span><span class="fu">flyToBounds</span>(layer<span class="op">.</span><span class="fu">getBounds</span>()<span class="op">,</span> {<span class="dt">duration</span><span class="op">:</span> <span class="fl">0.4</span>})<span class="op">;</span></span>
+<span id="cb7-209"><a href="#cb7-209" aria-hidden="true" tabindex="-1"></a>        <span class="co">// map.setView(layer.getBounds().getCenter());</span></span>
+<span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a>        mutable name <span class="op">=</span> layer<span class="op">.</span><span class="at">feature</span><span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">certificate_name</span><span class="op">;</span></span>
+<span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a>        mutable cpcn_url <span class="op">=</span> layer<span class="op">.</span><span class="at">feature</span><span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">cpcn_url</span><span class="op">;</span></span>
+<span id="cb7-212"><a href="#cb7-212" aria-hidden="true" tabindex="-1"></a>        mutable should_show_welcome_message <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a>        <span class="fu">show_sidebar</span>()<span class="op">;</span></span>
+<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a>        <span class="co">// </span><span class="al">TODO</span><span class="co">: show list of communities/places within service area (served by clicked utility). Could check which pins are in bounds, but better approach will be to use AEDG data. In sidebar, city names should be hyperlinked, when you click the name it will zoom the map to that city (useful for utilities that service many cities).</span></span>
+<span id="cb7-215"><a href="#cb7-215" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Also, button to return to starting view of entire state</span></span>
+<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a>      })<span class="op">;</span></span>
+<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a>  })<span class="op">.</span><span class="fu">addTo</span>(map)<span class="op">;</span></span>
+<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a>  <span class="co">// map.fitBounds(geoJSON.getBounds());</span></span>
+<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-223"><a href="#cb7-223" aria-hidden="true" tabindex="-1"></a>  <span class="co">// https://gis.stackexchange.com/questions/258515/show-hide-markers-depending-on-zoom-level</span></span>
+<span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a>  map<span class="op">.</span><span class="fu">on</span>(<span class="st">'zoomend'</span><span class="op">,</span> <span class="kw">function</span>() {</span>
+<span id="cb7-225"><a href="#cb7-225" aria-hidden="true" tabindex="-1"></a>    <span class="co">// console.log(map.getZoom())</span></span>
+<span id="cb7-226"><a href="#cb7-226" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (map<span class="op">.</span><span class="fu">getZoom</span>() <span class="op">&lt;</span> <span class="dv">8</span>) {</span>
+<span id="cb7-227"><a href="#cb7-227" aria-hidden="true" tabindex="-1"></a>            map<span class="op">.</span><span class="fu">removeLayer</span>(communityMarkers)<span class="op">;</span></span>
+<span id="cb7-228"><a href="#cb7-228" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb7-229"><a href="#cb7-229" aria-hidden="true" tabindex="-1"></a>            map<span class="op">.</span><span class="fu">addLayer</span>(communityMarkers)<span class="op">;</span></span>
+<span id="cb7-230"><a href="#cb7-230" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-231"><a href="#cb7-231" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb7-232"><a href="#cb7-232" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-233"><a href="#cb7-233" aria-hidden="true" tabindex="-1"></a>  <span class="co">// </span><span class="al">TODO</span><span class="co">: add legend https://stackoverflow.com/questions/59453642/how-to-add-legend-in-leaflet-map</span></span>
+<span id="cb7-234"><a href="#cb7-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-235"><a href="#cb7-235" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+
+
+
+
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIGh0dHBzOi8vZ2l0aHViLmNvbS9hY2VwLXVhZi9hZXRyLXdlYi1ib29rLTIwMjQvYmxvYi9tYWluL21ldGhvZHMucW1kXG5zdGRsaWIgPSByZXF1aXJlKFwiQG9ic2VydmFibGVocS9zdGRsaWJcIilcbmQzID0gcmVxdWlyZShcImQzQDdcIilcblxuTCA9IHJlcXVpcmUoJ2xlYWZsZXRAMS45LjQnKVxuXG5odG1sYDxsaW5rIGhyZWY9JyR7cmVzb2x2ZSgnbGVhZmxldEAxLjIuMC9kaXN0L2xlYWZsZXQuY3NzJyl9JyByZWw9J3N0eWxlc2hlZXQnIC8+YFxuXG5ib290c3RyYXA9cmVxdWlyZShcImJvb3RzdHJhcFwiKVxuXG5QYXBhID0gcmVxdWlyZShcInBhcGFwYXJzZVwiKVxuLy8gY3NzPWh0bWxgPGxpbmsgcmVsPVwic3R5bGVzaGVldFwiIGhyZWY9XCJodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvbnBtL2Jvb3RzdHJhcEA1LjIuMC9kaXN0L2Nzcy9ib290c3RyYXAubWluLmNzc1wiIGludGVncml0eT1cInNoYTM4NC1nSDJ5SUpxS2ROSFBFcTBuNE1xYS9IR0tJaFNrSUhlTDVBeWhrWVY4aTU5VTVBUjZjc0J2QXBISE5sL3ZJMUJ4XCIgY3Jvc3NvcmlnaW49XCJhbm9ueW1vdXNcIj5gXG4vLyBjc3M9aHRtbGA8bGluayByZWw9XCJzdHlsZXNoZWV0XCIgaHJlZj1cImh0dHBzOi8vY2RuLmpzZGVsaXZyLm5ldC9ucG0vYm9vdHN0cmFwQDUuMi4wL2Rpc3QvY3NzL2Jvb3RzdHJhcC5taW4uY3NzXCIgaW50ZWdyaXR5PVwic2hhMzg0LWdIMnlJSnFLZE5IUEVxMG40TXFhL0hHS0loU2tJSGVMNUF5aGtZVjhpNTlVNUFSNmNzQnZBcEhITmwvdkkxQnhcIiBjcm9zc29yaWdpbj1cImFub255bW91c1wiPmBcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6InNlcnZpY2VfYXJlYXMgPSBGaWxlQXR0YWNobWVudChcInNlcnZpY2UtYXJlYXMuZ2VvanNvblwiKS5qc29uKClcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vYnNDb2xsYXBzZSA9IG5ldyBib290c3RyYXAuQ29sbGFwc2UoJyNteUNvbGxhcHNlJywge1xuLy8gIHRvZ2dsZTogZmFsc2Vcbi8vfSlcblxuc2hvd19zaWRlYmFyID0gZnVuY3Rpb24gKCkge1xuICBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKCcjbXlDb2xsYXBzZScpLmNsYXNzTGlzdC5hZGQoJ3Nob3cnKTtcbiAgY29uc3QgZXZlbnQgPSBuZXcgRXZlbnQoJ3NpZGViYXItb3BlbmVkJyk7XG4gIHdpbmRvdy5kaXNwYXRjaEV2ZW50KGV2ZW50KTtcbiAgY29uc29sZS5sb2coJ1NpZGViYXIgb3BlbmVkJyk7XG4gIC8vdmlld29mIHNpZGViYXJfbWVzc2FnZS5xdWVyeVNlbGVjdG9yKFwiLmJ0bi1jbG9zZVwiKS5vbmNsaWNrID0gKCkgPT4geyBoaWRlX3NpZGViYXIoKTsgIH07XG59XG5cbmhpZGVfc2lkZWJhciA9IGZ1bmN0aW9uICgpIHtcbiAgZG9jdW1lbnQucXVlcnlTZWxlY3RvcignI215Q29sbGFwc2UnKS5jbGFzc0xpc3QucmVtb3ZlKCdzaG93Jyk7XG4gIGNvbnN0IGV2ZW50ID0gbmV3IEV2ZW50KCdzaWRlYmFyLWNsb3NlZCcpO1xuICB3aW5kb3cuZGlzcGF0Y2hFdmVudChldmVudCk7XG4gIGNvbnNvbGUubG9nKCdTaWRlYmFyIGNsb3NlZCcpO1xufVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC00IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG5idXR0b25fY29kZSA9IGA8YnV0dG9uIHR5cGU9XCJidXR0b25cIiBjbGFzcz1cImJ0bi1jbG9zZSBwb3NpdGlvbi1hYnNvbHV0ZSB0b3AtMCBlbmQtMCBtLTJcIiBhcmlhLWxhYmVsPVwiQ2xvc2VcIiBvbmNsaWNrPVwiKCR7aGlkZV9zaWRlYmFyfSkoKVwiPjwvYnV0dG9uPmA7XG5cbndlbGNvbWVfbWVzc2FnZSA9IGAke2J1dHRvbl9jb2RlfVdlbGNvbWUgdG8gbXkgdG9vbDxicj48YnI+VHJ5IGJyb3dzaW5nIGFyb3VuZCB0aGUgbWFwIGFuZCBjbGlja2luZyBvbiBhIHV0aWxpdHkgc2VydmljZSBhcmVhIGA7XG5tdXRhYmxlIG5hbWUgPSBcIlwiOyAvLyBUT0RPOiBmaW5kIGEgd2F5IHRvIGRvIHRoaXMgd2l0aG91dCBtdXRhYmxlXG5tdXRhYmxlIGNwY25fdXJsID0gXCJcIjtcblxuLy8gRXhhbXBsZSBkYXRhIOKAlCByZXBsYWNlIHdpdGggYWN0dWFsIHNlbGVjdGVkIGZlYXR1cmVcblxubXV0YWJsZSBzaG91bGRfc2hvd193ZWxjb21lX21lc3NhZ2UgPSB0cnVlO1xuXG52aWV3b2Ygc2lkZWJhcl9tZXNzYWdlID0gc2hvdWxkX3Nob3dfd2VsY29tZV9tZXNzYWdlID8gaHRtbGA8cD4ke3dlbGNvbWVfbWVzc2FnZX08L3A+YCA6IGh0bWxgPGRpdiBjbGFzcz1cInBvc2l0aW9uLXJlbGF0aXZlIHAtM1wiPlxuICAke2J1dHRvbl9jb2RlfVxuICA8aDUgY2xhc3M9XCJtYi0zXCI+JHtuYW1lfTwvaDU+XG4gIDx1bCBjbGFzcz1cImxpc3QtZ3JvdXAgbGlzdC1ncm91cC1mbHVzaFwiPlxuICAgIDxsaT5WaWV3IDxhIGhyZWY9XCIke2NwY25fdXJsfVwiIHRhcmdldD1cIl9ibGFua1wiPmNlcnRpZmljYXRlIGluZm9ybWF0aW9uPC9hPiBvbiB0aGUgUmVndWxhdG9yeSBDb21taXNzaW9uIG9mIEFsYXNrYSB3ZWJzaXRlPC9saT5cbiAgPC91bD5cbjwvZGl2PmA7XG5cbi8vIEFkZCBhdHRyaWJ1dGUgcm93c1xuLy9jb25zdCBsaXN0ID0gc2lkZWJhcl9tZXNzYWdlLnF1ZXJ5U2VsZWN0b3IoXCJ1bFwiKTtcbi8vZm9yIChjb25zdCBba2V5LCB2YWx1ZV0gb2YgT2JqZWN0LmVudHJpZXMoYXR0cmlidXRlcykpIHtcbi8vICBjb25zdCBpdGVtID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudChcImxpXCIpO1xuLy8gIGl0ZW0uY2xhc3NOYW1lID0gXCJsaXN0LWdyb3VwLWl0ZW0gcHgtMCBweS0xXCI7XG4vLyAgaXRlbS5pbm5lckhUTUwgPSBgPHN0cm9uZz4ke2tleX06PC9zdHJvbmc+ICR7dmFsdWV9YDtcbi8vICBsaXN0LmFwcGVuZENoaWxkKGl0ZW0pO1xuLy99XG5cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6InZpZXdvZiBjb250YWluZXIgPSBET00uZWxlbWVudCgnZGl2JywgeyBzdHlsZTogYGhlaWdodDo4NXZoYCB9KTtcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIFRPRE8gc3BsaXQgaW50byBzbWFsbGVyIGNlbGxzXG5tYXAgPSB7XG5cbiAgLy8gY3JlYXRlIG1hcCBvYmplY3RcbiAgbGV0IG1hcCA9IEwubWFwKHZpZXdvZiBjb250YWluZXIpLnNldFZpZXcoWzYyLjk0NTI3OTYwMTIyMjM5NiwgLTE1NS41OTQ2Njk3NzI3ODMxXSwgNSk7XG4gIC8vIGh0dHBzOi8vZ2l0aHViLmNvbS9rYnZlcm5vbi9obmRzci13YXRlcnNoZWRzL2Jsb2IvbWFpbi9vYnNlcnZhYmxlLW1hcC5xbWQjTDEyMlxuICAvLyBhZGQgYmFzZW1hcFxuICBcbiAgd2luZG93Ll9fX01BUCA9IG1hcDtcbiAgXG4gIG1hcC53aGVuUmVhZHkoKCk9PiB7XG4gICAgLy9jb25zb2xlLmxvZygnd2hlblJlYWR5IGZpcmVkJyk7XG4gICAgLy9mZXRjaCgnd2hlbnJlYWR5ZmlyZWQuY29tJylcbiAgICAvL3Nob3dfc2lkZWJhcigpO1xuICB9KTtcbiAgXG4gIC8vIFRlbGwgbGVhZmxldCB0aGF0IHdlIGNsb3NlZC9vcGVuZWQgc2lkZWJhciB3aGljaCBjYXVzZWQgbWFwIHdpZHRoIHRvIGNoYW5nZVxuICBhZGRFdmVudExpc3RlbmVyKCdzaWRlYmFyLWNsb3NlZCcsICgpPT57XG4gICAgY29uc29sZS5sb2coJ21hcCByZWN2IHNpZGViYXIgY2xvc2UnKTtcbiAgICBwcmV2aW91c2x5Q2xpY2tlZExheWVyLnNldFN0eWxlKG15U3R5bGUpO1xuICAgIHByZXZpb3VzbHlDbGlja2VkTGF5ZXIgPSBudWxsO1xuICAgIG1hcC5pbnZhbGlkYXRlU2l6ZSgpO1xuICB9KTtcbiAgYWRkRXZlbnRMaXN0ZW5lcignc2lkZWJhci1vcGVuZWQnLCAoKT0+e1xuICAgIGNvbnNvbGUubG9nKCdtYXAgcmVjdiBzaWRlYmFyIG9wZW4nKTtcbiAgICBtYXAuaW52YWxpZGF0ZVNpemUoKTtcbiAgfSk7XG4gIFxuICBjb25zdCBvc20gPSBMLnRpbGVMYXllcignaHR0cHM6Ly90aWxlLm9wZW5zdHJlZXRtYXAub3JnL3t6fS97eH0ve3l9LnBuZycsIHtcbiAgICBtYXhab29tOiAxOSxcbiAgICBhdHRyaWJ1dGlvbjogJyZjb3B5OyA8YSBocmVmPVwiaHR0cHM6Ly9vcGVuc3RyZWV0bWFwLm9yZy9jb3B5cmlnaHRcIj5PcGVuU3RyZWV0TWFwIGNvbnRyaWJ1dG9yczwvYT4nfSk7XG4gIC8vIG9zbS5hZGRUbyhtYXApO1xuICBcbiAgY29uc3QgZXNyaV90b3BvID0gTC50aWxlTGF5ZXIoXG4gICAgJ2h0dHBzOi8vc2VydmVyLmFyY2dpc29ubGluZS5jb20vQXJjR0lTL3Jlc3Qvc2VydmljZXMvV29ybGRfVG9wb19NYXAvTWFwU2VydmVyL3RpbGUve3p9L3t5fS97eH0nLCBcbiAgICB7YXR0cmlidXRpb246ICdUaWxlcyAmY29weTsgRXNyaSAmbWRhc2g7IEVzcmksIERlTG9ybWUsIE5BVlRFUSwgVG9tVG9tLCBJbnRlcm1hcCwgaVBDLCBVU0dTLCBGQU8sIE5QUywgTlJDQU4sIEdlb0Jhc2UsIEthZGFzdGVyIE5MLCBPcmRuYW5jZSBTdXJ2ZXksIEVzcmkgSmFwYW4sIE1FVEksIEVzcmkgQ2hpbmEgKEhvbmcgS29uZyksIGFuZCB0aGUgR0lTIFVzZXIgQ29tbXVuaXR5J30pO1xuICAvLyBlc3JpX3RvcG8uYWRkVG8obWFwKTtcbiAgXG4gIFxuICAvLyBodHRwczovL2dlb3BvcnRhbC5hbGFza2EuZ292L3BvcnRhbC9ob21lL2l0ZW0uaHRtbD9pZD1kNDYyMjMxY2MxNDU0ZTFhYmIyZGNjZDlhNzA5YTQ3NlxuICBjb25zdCBha18yMDIwX2ltYWdlcnkgPSBMLnRpbGVMYXllcihcbiAgICAnaHR0cHM6Ly9nZW9wb3J0YWwuYWxhc2thLmdvdi9hcmNnaXMvcmVzdC9zZXJ2aWNlcy9haHJpXzIwMjBfcmdiX2NhY2hlL01hcFNlcnZlci90aWxlL3t6fS97eX0ve3h9P2JsYW5rVGlsZT1mYWxzZScsIHtcbiAgICAvL2xheWVyczogJzAnLFxuXHRcdC8vZm9ybWF0OiAnaW1hZ2UvcG5nJyxcbiAgICBhdHRyaWJ1dGlvbjogJ0R5bmFtaWMgTW9zYWljICZjb3B5OyAyMDIwIE1heGFyIFRlY2hub2xvZ2llcyBJbmMuLCBBbGFza2EgR2Vvc3BhdGlhbCBPZmZpY2UsIFVTR1MnfSk7XG4gIGFrXzIwMjBfaW1hZ2VyeS5hZGRUbyhtYXApO1xuICBcbiAgY29uc3QgYWVkZ19jb21tdW5pdGllcyA9IG51bGw7XG4gIFxuICBMLmNvbnRyb2wubGF5ZXJzKFxuICAgIHtcbiAgICAgIFwiT3BlblN0cmVldE1hcFwiOiBvc20sXG4gICAgICBcIkVTUkkgVG9wb2dyYXBoaWNcIjogZXNyaV90b3BvLFxuICAgICAgXCJBbGFza2EgSGlnaCBSZXNvbHV0aW9uIEltYWdlcnkgKDUwY20pXCI6IGFrXzIwMjBfaW1hZ2VyeVxuICAgIH0sXG4gICAgbnVsbCxcbiAgICB7cG9zaXRpb246ICd0b3BsZWZ0J31cbiAgKS5hZGRUbyhtYXApO1xuXG4gIEwuY29udHJvbC5zY2FsZSh7aW1wZXJpYWw6IHRydWUsIG1ldHJpYzogdHJ1ZX0pLmFkZFRvKG1hcCk7XG4gIFxuICBsZXQgY29tbXVuaXR5TWFya2VycyAgPSBuZXcgTC5GZWF0dXJlR3JvdXAoKTtcbiAgXG4gIC8vIGh0dHBzOi8vZ2l0aHViLmNvbS9IYW5kc09uRGF0YVZpei9sZWFmbGV0LW1hcC1jc3YvYmxvYi9tYWluL2luZGV4Lmh0bWxcbiAgZmV0Y2goJ2h0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9hY2VwLWFlZGcvYWVkZy1kYXRhLXBvbmQvcmVmcy9oZWFkcy9tYWluL2RhdGEvcHVibGljL3B1YmxpY19jb21tdW5pdGllcy5jc3YnKVxuICAgIC50aGVuKChyZXNwb25zZSkgPT4gcmVzcG9uc2UudGV4dCgpKVxuICAgIC50aGVuKChjc3ZTdHJpbmcpID0+IHtcbiAgICAgIGxldCBkYXRhID0gUGFwYS5wYXJzZShjc3ZTdHJpbmcsIHtoZWFkZXI6IHRydWUsIGR5bmFtaWNUeXBpbmc6IHRydWV9KS5kYXRhO1xuXG4gICAgLy8gRm9yIGVhY2ggcm93IGluIGRhdGEsIGNyZWF0ZSBhIG1hcmtlciBhbmQgYWRkIGl0IHRvIHRoZSBtYXBcbiAgICAvLyBGb3IgZWFjaCByb3csIGNvbHVtbnMgYExhdGl0dWRlYCwgYExvbmdpdHVkZWAsIGFuZCBgVGl0bGVgIGFyZSByZXF1aXJlZFxuICAgICAgZm9yIChsZXQgaSBpbiBkYXRhKSB7XG4gICAgICAgIGxldCByb3cgPSBkYXRhW2ldO1xuICBcbiAgICAgICAgLypsZXQgbWFya2VyID0gTC5jaXJjbGVNYXJrZXIoW3Jvdy5sYXRpdHVkZSwgcm93LmxvbmdpdHVkZV0sIHtcbiAgICAgICAgICByYWRpdXM6IDQsXG4gICAgICAgICAgb3BhY2l0eTogMSxcbiAgICAgICAgICBjb2xvcjogJyMwMDAnLFxuICAgICAgICAgIHN0cm9rZTogZmFsc2UsXG4gICAgICAgICAgZmlsbE9wYWNpdHk6IDAuNzVcbiAgICAgICAgfSkuYmluZFRvb2x0aXAocm93Lm5hbWUpOyovXG4gICAgICAgIGxldCBtYXJrZXIgPSBMLm1hcmtlcihbcm93LmxhdGl0dWRlLCByb3cubG9uZ2l0dWRlXSwge1xuICAgICAgICAgIG9wYWNpdHk6IDEsXG4gICAgICAgICAgY29sb3I6ICdyZWQnXG4gICAgICAgIH0pLmJpbmRUb29sdGlwKHJvdy5uYW1lKTtcbiAgICAgICAgY29tbXVuaXR5TWFya2Vycy5hZGRMYXllcihtYXJrZXIpO1xuICAgICAgICAvL21hcmtlci5hZGRUbyhtYXApO1xuICAgICAgfVxuICAgIH0pXG5cbiAgLy8gaHR0cHM6Ly9sZWFmbGV0anMuY29tL2V4YW1wbGVzL2dlb2pzb24vXG4gIC8vIEFkZCB0aGlzIGxhc3Q/XG4gIFxuICB2YXIgbXlTdHlsZSA9IHtcbiAgICBcImNvbG9yXCI6IFwiI2ZmOTMyZVwiLFxuICAgIC8vXCJ3ZWlnaHRcIjogNSxcbiAgICAvL1wib3BhY2l0eVwiOiAwLjY1XG4gIH07XG4gIFxuICB2YXIgaGlnaGxpZ2h0ID0ge1xuICAgIFwiY29sb3JcIjogXCIjRkYwMDAwXCJcbiAgfTtcblxuICBsZXQgcHJldmlvdXNseUNsaWNrZWRMYXllciA9IG51bGw7IFxuICBcbiAgTC5nZW9KU09OKHNlcnZpY2VfYXJlYXMsIHtcbiAgICBzdHlsZTogbXlTdHlsZSxcbiAgICBvbkVhY2hGZWF0dXJlOiBmdW5jdGlvbiAoZmVhdHVyZSwgbGF5ZXIpIHtcbiAgICAgIGxheWVyLm9uKCdjbGljaycsIGZ1bmN0aW9uIChlKSB7XG4gICAgICAgIGNvbnNvbGUubG9nKCdGZWF0dXJlIGNsaWNrZWQ6Jyk7XG4gICAgICAgIGNvbnNvbGUubG9nKGZlYXR1cmUpO1xuICAgICAgICBpZiAocHJldmlvdXNseUNsaWNrZWRMYXllciAmJiBwcmV2aW91c2x5Q2xpY2tlZExheWVyICE9PSBsYXllcikge1xuICAgICAgICAgIHByZXZpb3VzbHlDbGlja2VkTGF5ZXIuc2V0U3R5bGUobXlTdHlsZSk7XG4gICAgICAgIH1cbiAgICAgICAgbGF5ZXIuc2V0U3R5bGUoaGlnaGxpZ2h0KTtcbiAgICAgICAgcHJldmlvdXNseUNsaWNrZWRMYXllciA9IGxheWVyO1xuICAgICAgICBtYXAuZmx5VG9Cb3VuZHMobGF5ZXIuZ2V0Qm91bmRzKCksIHtkdXJhdGlvbjogMC40fSk7XG4gICAgICAgIC8vIG1hcC5zZXRWaWV3KGxheWVyLmdldEJvdW5kcygpLmdldENlbnRlcigpKTtcbiAgICAgICAgbXV0YWJsZSBuYW1lID0gbGF5ZXIuZmVhdHVyZS5wcm9wZXJ0aWVzLmNlcnRpZmljYXRlX25hbWU7XG4gICAgICAgIG11dGFibGUgY3Bjbl91cmwgPSBsYXllci5mZWF0dXJlLnByb3BlcnRpZXMuY3Bjbl91cmw7XG4gICAgICAgIG11dGFibGUgc2hvdWxkX3Nob3dfd2VsY29tZV9tZXNzYWdlID0gZmFsc2U7XG4gICAgICAgIHNob3dfc2lkZWJhcigpO1xuICAgICAgICAvLyBUT0RPOiBzaG93IGxpc3Qgb2YgY29tbXVuaXRpZXMvcGxhY2VzIHdpdGhpbiBzZXJ2aWNlIGFyZWEgKHNlcnZlZCBieSBjbGlja2VkIHV0aWxpdHkpLiBDb3VsZCBjaGVjayB3aGljaCBwaW5zIGFyZSBpbiBib3VuZHMsIGJ1dCBiZXR0ZXIgYXBwcm9hY2ggd2lsbCBiZSB0byB1c2UgQUVERyBkYXRhLiBJbiBzaWRlYmFyLCBjaXR5IG5hbWVzIHNob3VsZCBiZSBoeXBlcmxpbmtlZCwgd2hlbiB5b3UgY2xpY2sgdGhlIG5hbWUgaXQgd2lsbCB6b29tIHRoZSBtYXAgdG8gdGhhdCBjaXR5ICh1c2VmdWwgZm9yIHV0aWxpdGllcyB0aGF0IHNlcnZpY2UgbWFueSBjaXRpZXMpLlxuICAgICAgICAvLyBBbHNvLCBidXR0b24gdG8gcmV0dXJuIHRvIHN0YXJ0aW5nIHZpZXcgb2YgZW50aXJlIHN0YXRlXG4gICAgICAgIFxuICAgICAgfSk7XG4gICAgfVxuICB9KS5hZGRUbyhtYXApO1xuICBcbiAgLy8gbWFwLmZpdEJvdW5kcyhnZW9KU09OLmdldEJvdW5kcygpKTtcbiAgXG4gIC8vIGh0dHBzOi8vZ2lzLnN0YWNrZXhjaGFuZ2UuY29tL3F1ZXN0aW9ucy8yNTg1MTUvc2hvdy1oaWRlLW1hcmtlcnMtZGVwZW5kaW5nLW9uLXpvb20tbGV2ZWxcbiAgbWFwLm9uKCd6b29tZW5kJywgZnVuY3Rpb24oKSB7XG4gICAgLy8gY29uc29sZS5sb2cobWFwLmdldFpvb20oKSlcbiAgICBpZiAobWFwLmdldFpvb20oKSA8IDgpIHtcbiAgICAgICAgICAgIG1hcC5yZW1vdmVMYXllcihjb21tdW5pdHlNYXJrZXJzKTtcbiAgICB9IGVsc2Uge1xuICAgICAgICAgICAgbWFwLmFkZExheWVyKGNvbW11bml0eU1hcmtlcnMpO1xuICAgIH1cbiAgfSk7XG4gIFxuICAvLyBUT0RPOiBhZGQgbGVnZW5kIGh0dHBzOi8vc3RhY2tvdmVyZmxvdy5jb20vcXVlc3Rpb25zLzU5NDUzNjQyL2hvdy10by1hZGQtbGVnZW5kLWluLWxlYWZsZXQtbWFwXG5cbn1cblxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdzaWRlYmFyX21lc3NhZ2UnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgnY29udGFpbmVyJykifV19
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../..";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
