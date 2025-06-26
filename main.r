@@ -363,4 +363,4 @@ merged <- bind_rows(sf_list) %>%
 #tm_shape(merged) +
 #  tm_polygons(fill_alpha=0.5)
 
-st_write(merged %>% filter(utility_type == "Electric", entity_type == "utility"), glue("test-{as.integer(Sys.time())}.geojson"))
+st_write(merged %>% filter(utility_type == "Electric", entity_type == "utility"), glue("service-areas.geojson"))

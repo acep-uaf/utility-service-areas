@@ -3,7 +3,7 @@ data/*
 .DS_Store
 # .csv
 *.kml
-*.geojson
+# *.geojson
 *.Rproj.user
 *.Rhistory
 /.quarto/
