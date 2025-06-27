@@ -8,3 +8,4 @@ data/*
 *.Rhistory
 /.quarto/
 /_site/
+.Rproj.user
