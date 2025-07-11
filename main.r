@@ -295,6 +295,7 @@ read_chronology_table <- function(cert_num) {
 
 certificates.chronology <- data.frame()
 
+
 for (i in 1:nrow(certificates_csv.electric_filtered)) {
   cur_certificate_number <- certificates_csv.electric_filtered[i, ]$certificate_number
   certificates.chronology <- certificates.chronology %>% 
@@ -400,31 +401,73 @@ merged_processed_electric_service_areas <- bind_rows(sf_list) %>%
 
 # BEGIN MANUAL PATCHING OF SERVICE AREAS
 
-## AVEC
+patch_effective_versions <- tribble(
+  # We don't want to mess around and merge kmls together unless we're absolutely sure that we are correcting data and not introducing errors.
+  # This table contains a certificate number and a last update date.
+  # If the KML last update date does not match the date in the table, then the patches will be skipped for that certificate.
+  # In this way, the patches will only be performed on a specific version of the KML that is known to have certain missing data.
+  # To use this table, add a certificate being patched below and the current date of the last update in the KML (from kml_most_recent_update_date field). 
+  # When RCA updates their KMLs, the patches will be skipped as the dates will not match anymore.
+  ~cert, ~expected_kml_most_recent_update_date,
+  169, "2002-03-26",
+  8, "2013-01-25"
+)
 
-# TODO: make array of patches and iterate through - maybe two columns, cert1 cert2. basically doing cert1 += cert2 for every row
+# Todo add date
+patches <- tribble(
+  # Define which certs are being manually merged/patched
+  # Format: Cert1 += Cert2 -- Bigger cert # in first column, smaller acquired cert # in second column
+  ~cert1, ~cert2,
+  ## Start AVEC https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=6e731ed9-5898-4eaa-814c-8d1547ddac1a
+  169, 61, # AVEC acquired service area of Teller (cert #81)
+  169, 285, # AVEC acquired service area of City of Kotlik (cert #285) https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=598DFC13-86CF-47A0-A1A3-09245D482BA9
+  169, 688, # AVEC acquired service area of City of Ekwok (cert #688) https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=8c915917-efe4-41ca-8d7d-1cb7534b19a9
+  169, 407, # AVEC acquired service area of City of Kobuk (cert #407) https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=2f3dee1f-e202-434b-8f0a-714714ca3682
+  169, 43, # AVEC acquired service area of Bethel Utilities Corporation (cert #43) https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=6eeb6425-ce1f-4c2f-b765-dfd3505e299f
+  # Yakutat is missing a KML, so we can't merge it in
+  169, 729, # AVEC acquired service area of Twin Hills (cert #729) https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=677d0f01-25b2-4c01-bf9b-bea7358300f9
+  ## End AVEC
+  8, 121 # CEA acquired service area of ML&P (cert #121) https://github.com/acep-uaf/utility-service-areas/issues/9#issuecomment-3054393380
+)
+
+patch_geometry <- function(cert_num, geom, kml_date) {
+  patch_rows <- patches %>% filter(cert1 == cert_num)
+  patch_version_row <- patch_effective_versions %>% filter(cert == cert_num)
+  
+  if (nrow(patch_rows) > 0 && nrow(patch_version_row) > 0) {
+    if (kml_date == patch_version_row$expected_kml_most_recent_update_date) {
+      patched_geom <- geom
+      for (cert2 in patch_rows$cert2) {
+        # TODO: get rid of 'st_as_s2(): dropping Z and/or M coordinate' console spam
+        patch_geom <- st_geometry(st_read(glue("data/{cert2}-servicearea.kml"), quiet = TRUE))
+        patched_geom <- st_union(patched_geom, patch_geom)
+        message(glue("Patch applied to certificate {cert_num}, merged with certificate {cert2}"))
+      }
+      return(patched_geom)
+    } else {
+      warning(glue(
+        "Certificate {cert_num} not patched, expected KML date {patch_version_row$expected_kml_most_recent_update_date} but got {kml_date}"
+      ))
+      return(geom)
+    }
+  } else {
+    return(geom)
+  }
+}
+
 # TODO: only patch if KML is out-of-date and has expected (hard-coded date) (date = 2002 for AVEC, etc) or if KML does not already contain target service areas
-merged_processed_electric_service_areas <- merged_processed_electric_service_areas %>% 
-  rowwise() %>% 
-  mutate(geometry = if (certificate_number == 169) {
-      st_union(geometry, st_geometry(st_read("data/729-servicearea.kml"))) # Twin Hills - add citation for this patch (RCA order pdf) above
-  #} else if (certificate_number == 1) {
-     # do something
-  } else if (certificate_number == 8) {
-      # https://github.com/acep-uaf/utility-service-areas/issues/9#issuecomment-3054393380
-      st_union(geometry, st_geometry(st_read("data/121-servicearea.kml")))
-    }
-    else {
-      geometry
-    }
-  ) %>% 
+merged_processed_electric_service_areas <- merged_processed_electric_service_areas %>%
+  rowwise() %>%
+  mutate(geometry = patch_geometry(certificate_number, geometry, kml_most_recent_update_date)) %>%
   ungroup()
 
 # END MANUAL PATCHING
 
-# Export active 
-
-# Now we have a merged layer with active electric service areas, cleaned and processed according to our needs (e.g excluding wholesale and IPP)
+# Now we have a merged layer with active electric service areas, cleaned and processed according to our needs (e.g. excluding wholesale and IPP)
 # and with manual patches to fix some data quality issues
+output_path = "service-areas.geojson"
+if (file.exists(output_path)) {
+  file.remove(output_path)
+}
 st_write(merged_processed_electric_service_areas %>% 
-           filter(entity_type == "utility"), glue("service-areas.geojson"))
+           filter(entity_type == "utility"), output_path)
