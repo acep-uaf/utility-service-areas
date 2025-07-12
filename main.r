@@ -381,24 +381,6 @@ certificates <- certificates_csv.electric_filtered %>%
   relocate(kml_most_recent_update_date, .after = kml_most_recent_update_included) %>%
   ungroup()
 
-# TODO: warning, kmls for certs_missing_kml_files are missing 
-
-file_list <- list.files("data", pattern = "-servicearea.kml$", full.names = TRUE)
-sf_list <- map(file_list, ~st_read(.x, quiet = TRUE))
-# Just merge all electric service areas, active and inactive. No manual patching.
-merged_processed_electric_service_areas <- bind_rows(sf_list) %>%
-  mutate(certificate_number = as.numeric(str_extract(Name, regex("(?!Certificate No. )[\\d]+(\\.[\\d]+)?")))) %>% # Regex needs to match CPCN "18.1"
-  select(-c(Name, Description)) %>%
-  mutate(geometry = st_make_valid(geometry)) %>%
-  group_by(certificate_number) %>%
-  summarise(geometry = st_combine(geometry)) %>% # TODO: not sure if we want st_union or st_combine here. This line is here because of certs 725 and 726 which are multiple polygon features instead of one multipolygon
-  ungroup() %>%
-  # mutate(geometry = st_cast(geometry, "POLYGON")) %>% # Not sure if we should do this. But it's easier to work with (pan/zoom to/highlight) individual polygons than a multipolygon in leaflet. Especially discontiguous ones like AVEC
-  inner_join(certificates, by=join_by(certificate_number)) %>%
-  select(-geometry,everything()) # Move geometry to end
-
-
-
 # BEGIN MANUAL PATCHING OF SERVICE AREAS
 
 patch_effective_versions <- tribble(
@@ -410,11 +392,12 @@ patch_effective_versions <- tribble(
   # When RCA updates their KMLs, the patches will be skipped as the dates will not match anymore.
   ~cert, ~expected_kml_most_recent_update_date,
   169, "2002-03-26",
-  8, "2013-01-25"
+  8, "2013-01-25",
+  635, "2001-07-05",
+  412, "1988-11-28"
 )
 
-# Todo add date
-patches <- tribble(
+merge_patches <- tribble(
   # Define which certs are being manually merged/patched
   # Format: Cert1 += Cert2 -- Bigger cert # in first column, smaller acquired cert # in second column
   ~cert1, ~cert2,
@@ -430,8 +413,44 @@ patches <- tribble(
   8, 121 # CEA acquired service area of ML&P (cert #121) https://github.com/acep-uaf/utility-service-areas/issues/9#issuecomment-3054393380
 )
 
+plss_patches <- tribble(
+  ~cert, ~corrected_plss_description,
+  # PLSS description format: principal meridian, 3 digit township # and direction, 3 digit range # and direction, two digit section # 
+  635, c("S009N067W05", "S009N067W06", "S010N067W31", "S010N067W32"), # Fixing error in Akiak service area description https://github.com/acep-uaf/utility-service-areas/issues/11
+  412, c("S010N068W31", "S010N069W36") # Fixing error in Akiachak service area description https://github.com/acep-uaf/utility-service-areas/issues/12
+) %>% unnest(corrected_plss_description) %>%
+  group_by(cert) %>%
+  summarise(
+    query_string = paste0(
+      "(MTRS = '", corrected_plss_description, "')",
+      collapse = " OR "
+    ),
+    .groups = "drop"
+  ) %>%
+  mutate(query_url = glue("https://arcgis.dnr.alaska.gov/arcgis/rest/services/OpenData/ReferenceGrid_PLSSgridUnclipped/MapServer/1/query?where={URLencode(query_string)}",
+                            "&outFields=*&returnGeometry=true&f=geojson"))
+
+for(i in 1:nrow(plss_patches)) { # TODO: rewrite for loops using pwalk/map
+  row <- plss_patches[i,]
+  orig_kml_row <- certificates %>% filter(certificate_number == row$cert)
+  patch_version_row <- patch_effective_versions %>% filter(cert == row$cert)
+  if (nrow(orig_kml_row) > 0 && nrow(patch_version_row) > 0) {
+    if (orig_kml_row$kml_most_recent_update_date == patch_version_row$expected_kml_most_recent_update_date) {
+      out_path = glue("data/{row$cert}-servicearea-plss-fix.kml")
+      file.remove(out_path)
+      st_write(st_union(st_read(row$query_url)), out_path)
+      message(glue("PLSS patch for certificate {row$cert} saved to {out_path}"))
+    } else {
+      warning(glue(
+        "Certificate {row$cert} not patched, expected KML date {patch_version_row$expected_kml_most_recent_update_date} but got {orig_kml_row$kml_most_recent_update_date}"
+      ))
+    }
+  }
+  
+}
+
 patch_geometry <- function(cert_num, geom, kml_date) {
-  patch_rows <- patches %>% filter(cert1 == cert_num)
+  patch_rows <- merge_patches %>% filter(cert1 == cert_num)
   patch_version_row <- patch_effective_versions %>% filter(cert == cert_num)
   
   if (nrow(patch_rows) > 0 && nrow(patch_version_row) > 0) {
@@ -455,8 +474,32 @@ patch_geometry <- function(cert_num, geom, kml_date) {
   }
 }
 
-# TODO: only patch if KML is out-of-date and has expected (hard-coded date) (date = 2002 for AVEC, etc) or if KML does not already contain target service areas
-merged_processed_electric_service_areas <- merged_processed_electric_service_areas %>%
+# TODO: warning, kmls for certs_missing_kml_files are missing 
+
+file_list <- list.files("data", pattern = "-servicearea(-plss-fix)?.kml$", full.names = TRUE)
+files_tbl <- tibble(file = file_list) %>%
+  mutate(
+    cert = str_match(file, "^data/([\\d]+(\\.[\\d]+)?)-servicearea")[,2],
+    is_patch = str_detect(file, "-plss-fix")
+  ) %>%
+  group_by(cert) %>%
+  filter(is_patch | !any(is_patch)) %>% # If there is a patch, remove the original file from the file list
+  ungroup() %>%
+  pull(file)
+sf_list <- map(files_tbl, ~st_read(.x, quiet = TRUE) %>%
+                 mutate(file_path = .x))
+merged_processed_electric_service_areas <- bind_rows(sf_list) %>%
+  mutate(certificate_number = as.numeric(str_extract(file_path, regex("[\\d]+(\\.[\\d]+)?(?=-servicearea)")))) %>% # Regex needs to match CPCN "18.1"
+  select(c(certificate_number, geometry)) %>%
+  rowwise() %>%
+  mutate(geometry = st_make_valid(geometry)) %>%
+  ungroup() %>%
+  group_by(certificate_number) %>%
+  summarise(geometry = st_combine(geometry)) %>% # TODO: not sure if we want st_union or st_combine here. This line is here because of certs 725 and 726 which are multiple polygon features instead of one multipolygon
+  ungroup() %>%
+  # mutate(geometry = st_cast(geometry, "POLYGON")) %>% # Not sure if we should do this. But it's easier to work with (pan/zoom to/highlight) individual polygons than a multipolygon in leaflet. Especially discontiguous ones like AVEC
+  inner_join(certificates, by=join_by(certificate_number)) %>%
+  select(-geometry,everything()) %>% # Move geometry to end
   rowwise() %>%
   mutate(geometry = patch_geometry(certificate_number, geometry, kml_most_recent_update_date)) %>%
   ungroup()
@@ -471,3 +514,4 @@ if (file.exists(output_path)) {
 }
 st_write(merged_processed_electric_service_areas %>% 
            filter(entity_type == "utility"), output_path)
+
