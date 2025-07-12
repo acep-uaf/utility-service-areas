@@ -394,7 +394,8 @@ patch_effective_versions <- tribble(
   169, "2002-03-26",
   8, "2013-01-25",
   635, "2001-07-05",
-  412, "1988-11-28"
+  412, "1988-11-28",
+  365, "1990-04-25"
 )
 
 merge_patches <- tribble(
@@ -417,7 +418,8 @@ plss_patches <- tribble(
   ~cert, ~corrected_plss_description,
   # PLSS description format: principal meridian, 3 digit township # and direction, 3 digit range # and direction, two digit section # 
   635, c("S009N067W05", "S009N067W06", "S010N067W31", "S010N067W32"), # Fixing error in Akiak service area description https://github.com/acep-uaf/utility-service-areas/issues/11
-  412, c("S010N068W31", "S010N069W36") # Fixing error in Akiachak service area description https://github.com/acep-uaf/utility-service-areas/issues/12
+  412, c("S010N068W31", "S010N069W36"), # Fixing error in Akiachak service area description https://github.com/acep-uaf/utility-service-areas/issues/12
+  365, c("S001N086W19", "S001N086W20", "S001N086W21", "S001N086W28", "S001N086W29", "S001N086W30") # Fixing error in Chefornak service area description https://github.com/acep-uaf/utility-service-areas/issues/16
 ) %>% unnest(corrected_plss_description) %>%
   group_by(cert) %>%
   summarise(
