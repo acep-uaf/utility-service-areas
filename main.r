@@ -401,6 +401,7 @@ patch_effective_versions <- tribble(
   635, "2001-07-05",
   412, "1988-11-28",
   365, "1990-04-25",
+  395, "2002-11-12",
   # KMLs missing from RCA's site
   741, NA,
   767, NA
@@ -428,6 +429,7 @@ plss_patches <- tribble(
   635, c("S009N067W05", "S009N067W06", "S010N067W31", "S010N067W32"), # Fixing error in Akiak service area description https://github.com/acep-uaf/utility-service-areas/issues/11
   412, c("S010N068W31", "S010N069W36"), # Fixing error in Akiachak service area description https://github.com/acep-uaf/utility-service-areas/issues/12
   365, c("S001N086W19", "S001N086W20", "S001N086W21", "S001N086W28", "S001N086W29", "S001N086W30"), # Fixing error in Chefornak service area description https://github.com/acep-uaf/utility-service-areas/issues/16,
+  395, c("S002S079W28", "S002S079W29", "S002S079W32", "S002S079W33"), # Fixing error in Puvurnaq Power Company service area description https://github.com/acep-uaf/utility-service-areas/issues/47
   # Creating missing KMLs https://github.com/acep-uaf/utility-service-areas/issues/8
   741, c("K018S010W28", "K018S010W29", "K018S010W30", "K018S010W31", "K018S010W32",
          "K018S011W09", "K018S011W16", "K018S011W21", "K018S011W22", "K018S011W23",
