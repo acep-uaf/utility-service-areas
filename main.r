@@ -10,7 +10,7 @@ dir.create("data", showWarnings = FALSE)
 certificates_csv <- read_csv("rca_electric_certificates.csv") %>%
   # filter(`certificate_status` == "Active") %>% # Filter to active utilities
   distinct(certificate_number, .keep_all = TRUE) # Quick and dirty way to get rid of duplicate rows that refer to the same certificate that is "co-owned" by two different entities. This just keeps the first row. The certificate url is the same in both so it doesn't matter which one is kept.
-  # filter(`utility_type` == "Electric") #Filter to electric utilities
+# filter(`utility_type` == "Electric") #Filter to electric utilities
 
 # TODO in future: check # of entries on live RCA site, make sure matches input csv
 
@@ -238,6 +238,8 @@ inactive_ids <- c(
   59,
   # https://github.com/acep-uaf/utility-service-areas/issues/15
   71,
+  # https://github.com/acep-uaf/utility-service-areas/issues/49
+  91,
   # https://github.com/acep-uaf/utility-service-areas/issues/9#issuecomment-3054393380
   121,
   # https://github.com/acep-uaf/utility-service-areas/issues/19
@@ -446,7 +448,7 @@ plss_patches <- tribble(
     .groups = "drop"
   ) %>%
   mutate(query_url = glue("https://arcgis.dnr.alaska.gov/arcgis/rest/services/OpenData/ReferenceGrid_PLSSgridUnclipped/MapServer/1/query?where={URLencode(query_string)}",
-                            "&returnGeometry=true&f=geojson"))
+                          "&returnGeometry=true&f=geojson"))
 
 for(i in 1:nrow(plss_patches)) { # TODO: rewrite for loops using pwalk/map
   row <- plss_patches[i,]
