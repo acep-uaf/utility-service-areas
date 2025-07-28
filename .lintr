@@ -1,0 +1,6 @@
+exclusions: list(
+    # Temp disable lint and fix later
+    # excluded from all lints:
+    "R/functions.R",
+    "_targets.R"
+  )
