@@ -194,6 +194,7 @@ merged_raw <- bind_rows(sf_list) %>%
 #tm_shape(merged) +
 #  tm_polygons(fill_alpha=0.5)
 
+# todo: Use function
 st_write(merged_raw, glue("service-areas-raw.geojson"))
 
 #### Begin manual patching
@@ -308,7 +309,8 @@ certificates_csv.electric_filtered <- certificates_csv %>%
     "utility")) %>%
   filter(!(certificate_number %in% inactive_ids),
          `certificate_status` == "Active",
-         `utility_type` == "Electric")
+         `utility_type` == "Electric",
+         `entity_type` == "utility")
 
 read_kml_description <- function(cert_num) {
   kml_path <- glue("data/{cert_num}-servicearea.kml")
@@ -351,6 +353,9 @@ read_chronology_table <- function(cert_num) {
 }
 
 certificates.chronology <- data.frame()
+
+
+
 
 
 for (i in 1:nrow(certificates_csv.electric_filtered)) {
