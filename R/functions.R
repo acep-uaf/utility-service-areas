@@ -429,6 +429,7 @@ generate_and_export_geojson <- function(kml_file_paths, certificates, out_file, 
 
   merged_patched <- bind_rows(sf_list) %>%
     mutate(certificate_number = as.numeric(str_extract(file_path, regex("[\\d]+(\\.[\\d]+)?(?=-servicearea)")))) %>% # Regex needs to match CPCN "18.1"
+    # TODO: add name and description fields to patch KMLs, so that they match RCA's KMLs. This will simplify pipeline logic - no need for seperate regex above - and enable RCA to use the patches as well.
     select(c(certificate_number, geometry)) %>%
     rowwise() %>%
     mutate(geometry = st_make_valid(geometry)) %>%
