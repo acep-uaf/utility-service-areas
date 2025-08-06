@@ -231,7 +231,12 @@ list(
   ),
   tar_target(
     name = electric_service_areas_cleaned_patched,
-    command = generate_and_export_geojson(append(certificate_kmls, plss_patches_kmls), certificates_with_kml_and_chronology_metadata, "service-areas.geojson", merge_patches, patch_effective_versions),
+    command = generate_and_export_geojson(append(certificate_kmls, plss_patches_kmls), certificates_with_kml_and_chronology_metadata, "service-areas-v2-metadata.geojson", merge_patches, patch_effective_versions),
     format = "file"
-  )
+  )#,
+  #### for dev
+  #tar_target(
+  #  name = output_no_geom,
+  #  command = electric_service_areas_cleaned_patched %>% st_set_geometry(NULL)
+  #)
 )

@@ -296,9 +296,35 @@ kml_has_newest_service_area_updates <- function(cert_num, kml_update_date, chron
 }
 
 build_certificates_df <- function(input_certs_df, certificates_chronology) {
+  
+  get_latest_chronology_for_cert <- function(cert_number) {
+    x <- certificates_chronology %>%
+      filter(Certificate == cert_number) %>%
+      tail(n = 1)
+  }
+  
+  get_formed_year_for_cert <- function(cert_number) {
+    x <- certificates_chronology %>%
+      filter(Certificate == cert_number) %>%
+      head(n = 1)
+    return(year(x$`Order Date`))
+  }
+  
+  build_order_text <- function(cert_number) {
+    docket_number <- get_latest_chronology_for_cert(cert_number)$`Docket Number`
+    order_number <- get_latest_chronology_for_cert(cert_number)$Order
+    if (!is.na(docket_number) && !is.na(order_number) && docket_number != "" && order_number != "") {
+      return(glue("{docket_number}({order_number})"))
+    } else if (!is.na(docket_number) && docket_number != "") {
+      return(docket_number)
+    } else {
+      return(NA_character_)
+    }
+  }
+  
   certificates <- input_certs_df %>%
     rowwise() %>%
-    mutate(kml_desc_field = safe_read_kml_description(certificate_number)) %>%
+    mutate(kml_desc_field = safe_read_kml_description(certificate_number)) %>% # TODO: custom patched kmls should have description  matching RCAs so that we can extract dates and stuff automatically rather manually setting in 20 places
     ungroup() %>%
     separate_wider_regex(
       kml_desc_field,
@@ -322,12 +348,10 @@ build_certificates_df <- function(input_certs_df, certificates_chronology) {
       filter(Certificate == certificate_number) %>%
       tail(n = 1))$`Order Date`) %>%
     # format('%m/%d/%y')) %>% # Temporarily change to MM/DD/YY so we don't get issues like xx/xx/64 (in KML descriptions) being converted to 2064-xx-xx. This will break in a few decades though. Fixed by convert_two_digit_years function
-    mutate(certificate_last_update_type = (certificates_chronology %>%
-      filter(Certificate == certificate_number) %>%
-      tail(n = 1))$Type) %>%
-    mutate(certificate_last_update_description = (certificates_chronology %>%
-      filter(Certificate == certificate_number) %>%
-      tail(n = 1))$Comment) %>%
+    mutate(certificate_granted_year = get_formed_year_for_cert(certificate_number)) %>%    
+    mutate(certificate_last_update_type = get_latest_chronology_for_cert(certificate_number)$Type) %>%
+    mutate(certificate_last_update_description = get_latest_chronology_for_cert(certificate_number)$Comment) %>%
+    mutate(certificate_last_update_order = build_order_text(certificate_number)) %>%
     mutate(kml_most_recent_update_date = str_extract(kml_most_recent_update_included, "[\\d]{1,2}\\/[\\d]{2}\\/([\\d]{4}|[\\d]{2})") %>%
       mdy() %>%
       convert_two_digit_years()) %>%
@@ -442,6 +466,80 @@ generate_and_export_geojson <- function(kml_file_paths, certificates, out_file, 
     rowwise() %>%
     mutate(geometry = get_merge_geom(certificate_number, geometry, kml_most_recent_update_date)) %>%
     ungroup()
+  
+  # Reformat field names
+  
+#  [1] "certificate_number"                  "certificate_type"                    "entity"                             
+#  [4] "certificate_name"                    "utility_type"                        "certificate_status"                 
+#  [7] "cpcn_url"                            "entity_url"                          "entity_type"                        
+ # [10] "alt_name"                            "kml_most_recent_update_included"     "kml_most_recent_update_date"        
+#  [13] "certificate_last_update_date"        "certificate_last_update_type"        "certificate_last_update_description"
+#  [16] "kml_has_latest_certificate_update" 
+  
+  # set_sync_status <- function
+  
+  set_sync_string <- function(is_current) {
+    if (is.na(is_current)) {
+      return("unknown")
+    } else if (is_current) {
+      return("up_to_date")
+    } else {
+      return("outdated")
+    }
+  }
+  
+  merged_patched <- merged_patched %>%
+    rename(geometry_is_current = kml_has_latest_certificate_update) %>%
+    rename(certificate_url = cpcn_url) %>%
+    # service_area_geometry_effective_date?
+    rename(geometry_last_update = kml_most_recent_update_date) %>% # Have to manually set this for patches
+    select(certificate_number,
+           entity,
+           certificate_name,
+           # utility_type,
+           certificate_status,
+           certificate_url,
+           certificate_granted_year,
+           certificate_last_update_date,
+           certificate_last_update_order,
+           certificate_last_update_type,
+           geometry_last_update,
+           geometry_is_current
+           # certificate_last_update_description, Too messy to include
+           ) %>%
+    mutate(certificate_last_update_type = ifelse(certificate_last_update_type == "type not set", 
+                                                 NA_character_,
+                                                 certificate_last_update_type)) %>%
+    rowwise() %>%
+    mutate(geometry_cert_sync_status = set_sync_string(geometry_is_current))
+    #rowwise() %>%
+    #mutate(
+    #  certificate_last_update_type = as.logical(certificate_last_update_type),
+    #  geometry_certificate_sync_status = case_when(
+        # Todo - add up_to_date_manually_patched
+    #    is.na(certificate_last_update_type) ~ "unknown",
+    ##    certificate_last_update_type == TRUE ~ "up_to_date",
+      #  !certificate_last_update_type == FALSE ~ "outdated"
+    #  )
+    #)
+  
+  # 
+    
+  
+  
+  # Fields
+  # certificate_number
+  # certificate_type
+  # utility_type
+  # entity - not really useful
+  # certificate_name
+  # certificate_status
+  # latest_chronology_entry
+  # latest_order
+  # service_area_as_of
+  # cpcn_url ---> change to certificate_url
+  # entity_url  -- drop
+  # 
 
   st_write_or_overwrite(merged_patched, out_file)
 
