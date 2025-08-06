@@ -3,9 +3,34 @@ title: "About"
 format: html
 ---
 
-# About this site
+# About this project
 
-This site allows users to view and download the authorized service areas of utilities certificated by the Regulatory Commission of Alaska (RCA). The RCA sets and approves the areas in which utilities may operate, and provides this information on a per-utility basis through their website. These boundaries are
-invaluable for researchers who are studying energy rates in communities across Alaska, especially since the majority of Alaskans are served by microgrid systems which are not interconnected to a broader traditional power grid.
+This site allows users to view and download the authorized service areas of utilities certificated by the Regulatory Commission of Alaska (RCA). The RCA sets and approves the areas in which utilities may operate, and provides this information on a per-utility basis through their website. These boundaries are invaluable for researchers who are studying energy rates in communities across Alaska, especially since the majority of Alaskans are served by microgrid systems which are not interconnected to a broader traditional power grid.
 
 The goal of this project was to create a single geospatial file in GeoJSON format which contains the service area boundaries of every active electric utility in Alaska. No such file currently exists.
+
+# Download the data
+
+Click here to download the latest version of the GeoJSON file: <a href="/service-areas-v2-metadata.geojson" target="_blank" download>Download now</a>
+
+# Metadata
+
+## Description of fields
+
+| Field | Type | Description |
+|---------------|---------------|-----------------------------------------|
+| `certificate_number` | number | Official numeric ID for the utility’s certificate. |
+| `entity` | string | A short name or acronym for the utility (e.g., "AEL&P"). Useful for grouping or labeling. |
+| `certificate_name` | string | Full name of the certificate holder as recorded by the Regulatory Commission of Alaska. |
+| `certificate_url` | string (URL) | Direct link to the certificate detail page on the Alaska RCA website. |
+| `certificate_granted_year` | number | Year the certificate was originally granted. Useful for historical context. |
+| `certificate_last_update_date` | string (YYYY-MM-DD) | Date of the most recent change to the certificate listed in the certificate chronology. May or may not be a change that affected the service area. |
+| `certificate_last_update_order` | string | RCA docket and order number for the last update. |
+| `certificate_last_update_type` | string | Description of the most recent update (e.g., `"Service Area Expansion"`, `"Transfer"`). |
+| `geometry_last_update` | string (YYYY-MM-DD) | Date the service area polygon reflects — e.g. the date of the latest included certificate action. |
+| `geometry_is_current` | boolean | `true` if the geometry reflects the latest known certificate update (if `certificate_last_update_date` is equal to `geometry_last_update`); `false` otherwise. |
+| `geometry_cert_sync_status` | string | One of: `"up_to_date"`, `"outdated"`, or `"unknown"`. Indicates whether the polygon is current. |
+
+# Details of data cleaning/data patches/errata
+
+TODO

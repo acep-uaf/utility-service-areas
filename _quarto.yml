@@ -11,9 +11,9 @@
 
  format:
    html:
-     theme:
-       light: flatly
-       dark: darkly
+     theme: darkly
+       #light: flatly
+       #dark: darkly
      css: styles.css
      toc: true
      respect-user-color-scheme: true

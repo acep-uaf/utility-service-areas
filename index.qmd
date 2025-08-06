@@ -4,7 +4,6 @@ format:
     page-layout: custom
 ---
 
-
 ```{ojs}
 // https://github.com/acep-uaf/aetr-web-book-2024/blob/main/methods.qmd
 stdlib = require("@observablehq/stdlib")
@@ -22,7 +21,7 @@ Papa = require("papaparse")
 ```
 
 ```{ojs}
-service_areas = FileAttachment("service-areas.geojson").json()
+service_areas = FileAttachment("service-areas-v2-metadata.geojson").json()
 ```
 
 ```{ojs}
@@ -46,16 +45,17 @@ hide_sidebar = function () {
 }
 ```
 
-:::::: {.panel-sidebar .collapse .collapse-horizontal .show #myCollapse}
+::: {#myCollapse .panel-sidebar .collapse .collapse-horizontal .show}
 ```{ojs}
 //| panel: sidebar
 //| 
 
 button_code = `<button type="button" class="btn-close position-absolute top-0 end-0 m-2" aria-label="Close" onclick="(${hide_sidebar})()"></button>`;
 
-welcome_message = `${button_code}Welcome to my tool<br><br>Try browsing around the map and clicking on a utility service area `;
+welcome_message = `${button_code}<h3>Alaska electric utilities service area explorer</h3><br><br><br>This interactive map enables you to view Alaskan electric utility service areas.<br><br>Try browsing around the map and clicking on a utility service area `;
 mutable name = ""; // TODO: find a way to do this without mutable
 mutable cpcn_url = "";
+mutable granted_year = "";
 
 // Example data — replace with actual selected feature
 
@@ -65,8 +65,11 @@ viewof sidebar_message = should_show_welcome_message ? html`<p>${welcome_message
   ${button_code}
   <h5 class="mb-3">${name}</h5>
   <ul class="list-group list-group-flush">
+    <li>Certificate granted in ${granted_year}*</li>
     <li>View <a href="${cpcn_url}" target="_blank">certificate information</a> on the Regulatory Commission of Alaska website</li>
   </ul>
+  <br>
+  <span style="font-size:10px">*Note: Year shown is the year that the application for a Certificate of Public Convenience and Necessity was granted. A utility can expand its service area under the same certificate over time, therefore, year shown might not the be same year that the communit(ies) inside this service area were first electrified or first received service from an electric utility. Also, RCA's online system doesn't list years older than 1964. If the year shown is 1964, the utility was probably formed earlier. </span>
 </div>`;
 
 // Add attribute rows
@@ -79,15 +82,14 @@ viewof sidebar_message = should_show_welcome_message ? html`<p>${welcome_message
 //}
 
 ```
+:::
 
-::::::
-
-:::::: {.panel-fill}
+::: panel-fill
 ```{ojs}
 //| panel: fill
 viewof container = DOM.element('div', { style: `height:85vh` });
 ```
-::::::
+:::
 
 ```{ojs}
 // TODO split into smaller cells
@@ -205,7 +207,8 @@ map = {
         map.flyToBounds(layer.getBounds(), {duration: 0.4});
         // map.setView(layer.getBounds().getCenter());
         mutable name = layer.feature.properties.certificate_name;
-        mutable cpcn_url = layer.feature.properties.cpcn_url;
+        mutable cpcn_url = layer.feature.properties.certificate_url;
+        mutable granted_year = layer.feature.properties.certificate_granted_year;
         mutable should_show_welcome_message = false;
         show_sidebar();
         // TODO: show list of communities/places within service area (served by clicked utility). Could check which pins are in bounds, but better approach will be to use AEDG data. In sidebar, city names should be hyperlinked, when you click the name it will zoom the map to that city (useful for utilities that service many cities).

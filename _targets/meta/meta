@@ -650,7 +650,7 @@ read_chronology_table|function|b9ea5ab4edad2d20
 submit_with_field_and_get_rca_response|function|1aa28889811af072
 format_plss_patches|function|69f8f5afe11170cf
 filter_certificates_csv|function|16b58c834ffe8795
-generate_and_export_geojson|function|b9a5ef277e714acf
+generate_and_export_geojson|function|50e4994bbb60c07a
 save_plss_patches|function|ccf5ab35f345f271
 generate_and_export_raw_geojson|function|3c2b9bd3c40b3b9e
 build_certificates_df|function|9dbaf73278cbc29e
@@ -658,4 +658,4 @@ process_chronology|function|989e7a566a744558
 download_certificate_chronology|function|a22ecc69335d571f
 fetch_certificates_list|function|8df48ddff6392ab5
 data_directory|stem|05bbc90d85c9ef22|114237a898d97bc8|d6fe2beea28270b7|2101570749|/Users/liam/repos/utility-service-areas/data|t20306.0171249994s|s15584b|15584|file|local|vector|||0||
-electric_service_areas_cleaned_patched|stem|0df892f7cf6b1519|a1b1f19c3469c1ba|68e1ea79f7e2513e|-1121670428|/Users/liam/repos/utility-service-areas/service-areas-v2-metadata.geojson|t20306.0276026968s|s1248846b|1248846|file|local|vector|||0.982||
+electric_service_areas_cleaned_patched|stem|009d15f66cbc2123|a1b1f19c3469c1ba|b78da13944d00eff|-1121670428|/Users/liam/repos/utility-service-areas/service-areas-v2-metadata.geojson|t20306.8190270625s|s1245454b|1245454|file|local|vector|||1.418||

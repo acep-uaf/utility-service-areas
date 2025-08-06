@@ -496,8 +496,8 @@ generate_and_export_geojson <- function(kml_file_paths, certificates, out_file, 
     select(certificate_number,
            entity,
            certificate_name,
-           # utility_type,
-           certificate_status,
+           # utility_type, All electric
+           # certificate_status, All active
            certificate_url,
            certificate_granted_year,
            certificate_last_update_date,
