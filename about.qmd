@@ -11,7 +11,11 @@ The goal of this project was to create a single geospatial file in GeoJSON forma
 
 # Download the data
 
-Click here to download the latest version of the GeoJSON file: <a href="/service-areas-v2-metadata.geojson" target="_blank" download>Download now</a>
+Download the latest version of the GeoJSON file: <a href="/service-areas-v2-metadata.geojson" target="_blank" download>Download now</a>
+
+# GitHub repository
+
+Access the GitHub repository here: https://github.com/acep-uaf/utility-service-areas 
 
 # Metadata
 
