@@ -195,7 +195,7 @@ list(
       # Format: Cert1 += Cert2 -- Bigger cert # in first column, smaller acquired cert # in second column
       ~cert1, ~cert2,
       ## Start AVEC https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=6e731ed9-5898-4eaa-814c-8d1547ddac1a
-      169, 61, # AVEC acquired service area of Teller (cert #81)
+      169, 61, # AVEC acquired service area of Teller (cert #61)
       169, 285, # AVEC acquired service area of City of Kotlik (cert #285) https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=598DFC13-86CF-47A0-A1A3-09245D482BA9
       169, 688, # AVEC acquired service area of City of Ekwok (cert #688) https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=8c915917-efe4-41ca-8d7d-1cb7534b19a9
       169, 407, # AVEC acquired service area of City of Kobuk (cert #407) https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=2f3dee1f-e202-434b-8f0a-714714ca3682

@@ -9,20 +9,22 @@ This site allows users to view and download the authorized service areas of util
 
 The goal of this project was to create a single geospatial file in GeoJSON format which contains the service area boundaries of every active electric utility in Alaska. No such file currently exists.
 
+Note: before using this data in your project, please read this entire page to learn more about how this dataset was assembled. Because of source data quality issues, this dataset does not contain every utility's service area, and if it does, it might not be up-to-date.
+
 # Download the data
 
 Download the latest version of the GeoJSON file: <a href="/service-areas-v2-metadata.geojson" target="_blank" download>Download now</a>
 
 # GitHub repository
 
-Access the GitHub repository here: https://github.com/acep-uaf/utility-service-areas 
+Access the GitHub repository here: https://github.com/acep-uaf/utility-service-areas
 
 # Metadata
 
 ## Description of fields
 
 | Field | Type | Description |
-|---------------|---------------|-----------------------------------------|
+|------------------|------------------|------------------------------------|
 | `certificate_number` | number | Official numeric ID for the utility’s certificate. |
 | `entity` | string | A short name or acronym for the utility (e.g., "AEL&P"). Useful for grouping or labeling. |
 | `certificate_name` | string | Full name of the certificate holder as recorded by the Regulatory Commission of Alaska. |
@@ -35,6 +37,91 @@ Access the GitHub repository here: https://github.com/acep-uaf/utility-service-a
 | `geometry_is_current` | boolean | `true` if the geometry reflects the latest known certificate update (if `certificate_last_update_date` is equal to `geometry_last_update`); `false` otherwise. |
 | `geometry_cert_sync_status` | string | One of: `"up_to_date"`, `"outdated"`, or `"unknown"`. Indicates whether the polygon is current. |
 
-# Details of data cleaning/data patches/errata
+# Data pipeline details
 
-Coming soon...
+## How the pipeline works
+
+This repository uses a data pipeline written using the targets R package. The pipeline consists of the following components:
+
+1.  A list of active electric certificates is retrieved from the RCA website. For each certificate, the provided service area KML file is downloaded.
+    -   Note: not all electric certificates on the RCA website have service area KML files available for download, which poses issues.
+2.  Certificates that do not have service areas or do not serve consumers - such as wholesale or independent power producers - are filtered out. Identified errors in the source data, such as inactive utilities still marked as active, are also removed. (see **Manual Patches** below).
+3.  Additional data quality issues are manually corrected (see **Manual Patches** below).
+4.  The service areas are combined into a single layer and exported to GeoJSON format with appropriate metadata.
+
+As mentioned above, [not all electric certificates on the RCA website have service area KML files available for download. Additionally, some of the KML files that were available for download were out of date or did not accurately reflect the service area description.]{.underline} Unfortunately, there is no automated, one-size-fits-all solution for a dataset like this, but when possible, data issues were fixed ("patched") on a case-by-case basis and the fixes integrated into the data pipeline.
+
+## Manual patches
+
+### Excluded certificates
+
+The following certificates are not included in the dataset because they were determined to be independent power producers, wholesale sellers, or some other unique case of electric utility that a) doesn't directly provide power to consumers b) does not have a service area. For more details on each of these excluded certificates, please refer to the comments [here](https://github.com/acep-uaf/utility-service-areas/blob/main/_targets.R#L67-L139).
+
+-   Gustavus Utility Service, Inc.
+
+-   Alaska Industrial Development & Export Authority - Snettisham
+
+-   BBL Hydro, Inc.
+
+-   Municipality of Anchorage d/b/a Anchorage Hydropower
+
+-   Alaska Electric and Energy Cooperative, Inc.
+
+-   TDX St. Paul Wind, LLC
+
+-   Goat Lake Hydro, Inc.
+
+-   Haida Energy, Inc.
+
+-   Alaska Environmental Power, LLC
+
+-   Alaska Electric Generation & Transmission Cooperative, Inc
+
+-   Aurora Energy, LLC
+
+-   Aleutian Wind Energy, LLC
+
+-   Kwaan Electric Transmission Intertie Cooperative, Inc.
+
+The following certificates are not included in the dataset because they are inactive, despite being incorrectly categorized as active on the RCA website.
+
+-   Weldon S. Holmes, d/b/a Semloh Supply
+
+-   Weisner Trading Co.
+
+-   Paxson Lodge
+
+-   Anchorage ML&P (acquired by CEA)
+
+-   Alaska Industrial Development & Export Authority - Healy (Revoked in 2019, AIDEA sold the Healy project in 2014)
+
+## Other fixes
+
+When a utility’s service area was missing (because there was no KML available on the RCA site) or incorrect, corrected service areas were created by hardcoding the correct Public Land Survey System (PLSS) descriptions when possible. Using the Alaska Department of Natural Resources’ [PLSS sections dataset](https://data-soa-dnr.opendata.arcgis.com/datasets/SOA-DNR::plss-sections-unclipped/about), the script then retrieved the appropriate polygons for those descriptions.
+
+The table below lists utilities whose service areas were manually corrected using this method, along with the reason for the correction and a link to the related issue or pull request.
+
+| Certificate | Issue | Reference |
+|------------------------|------------------------|------------------------|
+| City of Akiak | Typo in certificate service area description | <https://github.com/acep-uaf/utility-service-areas/issues/11> |
+| Akiachak | Typo in certificate service area description | <https://github.com/acep-uaf/utility-service-areas/issues/12> |
+| Chefornak | Typo in certificate service area description | <https://github.com/acep-uaf/utility-service-areas/issues/16> |
+| Puvurnaq Power Company | Typo in certificate service area description | <https://github.com/acep-uaf/utility-service-areas/issues/47> |
+| Unalakleet Valley Electric Cooperative | No KML available from RCA site | <https://github.com/acep-uaf/utility-service-areas/pull/45> |
+| Birch Creek Tribal Council | No KML available from RCA site | <https://github.com/acep-uaf/utility-service-areas/pull/46> |
+
+Some of the service area KML files available on the RCA website are outdated, since RCA no longer maintains them. This creates issues when a utility expands its service area by acquiring another utility. In these cases, the acquiring utility’s service area should include both its original territory and the territory of the acquired utility.
+
+This problem is especially relevant for the Alaska Village Electric Cooperative (AVEC), which has acquired numerous small utilities over the last decade and now serves 59 discontinuous communities across Alaska. Although AVEC’s official KML does not reflect many of these acquisitions, the acquired utilities’ KML files are still available. By merging those KMLs into AVEC’s service area, the script reconstructs a more accurate representation of AVEC’s current service area.
+
+The table below lists utilities that were manually merged into acquiring utilities for this reason.
+
+| Acquiring utility | Acquired utility | Reference |
+|------------------------|------------------------|------------------------|
+| AVEC | Teller Power Company | <https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=6e731ed9-5898-4eaa-814c-8d1547ddac1a> |
+| AVEC | City of Kotlik | <https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=598DFC13-86CF-47A0-A1A3-09245D482BA9> |
+| AVEC | City of Ekwok | <https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=8c915917-efe4-41ca-8d7d-1cb7534b19a9> |
+| AVEC | City of Kobuk | <https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=2f3dee1f-e202-434b-8f0a-714714ca3682> |
+| AVEC | Bethel Utilities Corporation | <https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=6eeb6425-ce1f-4c2f-b765-dfd3505e299f> |
+| AVEC | Twin Hills | <https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=677d0f01-25b2-4c01-bf9b-bea7358300f9> |
+| CEA | ML&P | <https://github.com/acep-uaf/utility-service-areas/issues/9#issuecomment-3054393380> |
