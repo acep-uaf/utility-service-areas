@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.7.34">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -36,10 +36,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-0c91c56ba2a409dd84b81a2e20c158ad.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-98d7d9710456612fc4454c02b7e6ee72.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -120,7 +120,15 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#description-of-fields" id="toc-description-of-fields" class="nav-link" data-scroll-target="#description-of-fields">Description of fields</a></li>
   </ul></li>
-  <li><a href="#details-of-data-cleaningdata-patcheserrata" id="toc-details-of-data-cleaningdata-patcheserrata" class="nav-link" data-scroll-target="#details-of-data-cleaningdata-patcheserrata">Details of data cleaning/data patches/errata</a></li>
+  <li><a href="#data-pipeline-details" id="toc-data-pipeline-details" class="nav-link" data-scroll-target="#data-pipeline-details">Data pipeline details</a>
+  <ul class="collapse">
+  <li><a href="#how-the-pipeline-works" id="toc-how-the-pipeline-works" class="nav-link" data-scroll-target="#how-the-pipeline-works">How the pipeline works</a></li>
+  <li><a href="#manual-patches" id="toc-manual-patches" class="nav-link" data-scroll-target="#manual-patches">Manual patches</a>
+  <ul class="collapse">
+  <li><a href="#excluded-certificates" id="toc-excluded-certificates" class="nav-link" data-scroll-target="#excluded-certificates">Excluded certificates</a></li>
+  </ul></li>
+  <li><a href="#other-fixes" id="toc-other-fixes" class="nav-link" data-scroll-target="#other-fixes">Other fixes</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -150,6 +158,7 @@ ul.task-list li input[type="checkbox"] {
 <h1>About this project</h1>
 <p>This site allows users to view and download the authorized service areas of utilities certificated by the Regulatory Commission of Alaska (RCA). The RCA sets and approves the areas in which utilities may operate, and provides this information on a per-utility basis through their website. These boundaries are invaluable for researchers who are studying energy rates in communities across Alaska, especially since the majority of Alaskans are served by microgrid systems which are not interconnected to a broader traditional power grid.</p>
 <p>The goal of this project was to create a single geospatial file in GeoJSON format which contains the service area boundaries of every active electric utility in Alaska. No such file currently exists.</p>
+<p>Note: before using this data in your project, please read this entire page to learn more about how this dataset was assembled. Because of source data quality issues, this dataset does not contain every utility’s service area, and if it does, it might not be up-to-date.</p>
 </section>
 <section id="download-the-data" class="level1">
 <h1>Download the data</h1>
@@ -165,9 +174,9 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="description-of-fields">Description of fields</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 57%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -236,11 +245,149 @@ ul.task-list li input[type="checkbox"] {
 </table>
 </section>
 </section>
-<section id="details-of-data-cleaningdata-patcheserrata" class="level1">
-<h1>Details of data cleaning/data patches/errata</h1>
-<p>Coming soon…</p>
+<section id="data-pipeline-details" class="level1">
+<h1>Data pipeline details</h1>
+<section id="how-the-pipeline-works" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-pipeline-works">How the pipeline works</h2>
+<p>This repository uses a data pipeline written using the targets R package. The pipeline consists of the following components:</p>
+<ol type="1">
+<li>A list of active electric certificates is retrieved from the RCA website. For each certificate, the provided service area KML file is downloaded.
+<ul>
+<li>Note: not all electric certificates on the RCA website have service area KML files available for download, which poses issues.</li>
+</ul></li>
+<li>Certificates that do not have service areas or do not serve consumers - such as wholesale or independent power producers - are filtered out. Identified errors in the source data, such as inactive utilities still marked as active, are also removed. (see <strong>Manual Patches</strong> below).</li>
+<li>Additional data quality issues are manually corrected (see <strong>Manual Patches</strong> below).</li>
+<li>The service areas are combined into a single layer and exported to GeoJSON format with appropriate metadata.</li>
+</ol>
+<p>As mentioned above, <u>not all electric certificates on the RCA website have service area KML files available for download. Additionally, some of the KML files that were available for download were out of date or did not accurately reflect the service area description.</u> Unfortunately, there is no automated, one-size-fits-all solution for a dataset like this, but when possible, data issues were fixed (“patched”) on a case-by-case basis and the fixes integrated into the data pipeline.</p>
+</section>
+<section id="manual-patches" class="level2">
+<h2 class="anchored" data-anchor-id="manual-patches">Manual patches</h2>
+<section id="excluded-certificates" class="level3">
+<h3 class="anchored" data-anchor-id="excluded-certificates">Excluded certificates</h3>
+<p>The following certificates are not included in the dataset because they were determined to be independent power producers, wholesale sellers, or some other unique case of electric utility that a) doesn’t directly provide power to consumers b) does not have a service area. For more details on each of these excluded certificates, please refer to the comments <a href="https://github.com/acep-uaf/utility-service-areas/blob/main/_targets.R#L67-L139">here</a>.</p>
+<ul>
+<li><p>Gustavus Utility Service, Inc.</p></li>
+<li><p>Alaska Industrial Development &amp; Export Authority - Snettisham</p></li>
+<li><p>BBL Hydro, Inc.</p></li>
+<li><p>Municipality of Anchorage d/b/a Anchorage Hydropower</p></li>
+<li><p>Alaska Electric and Energy Cooperative, Inc.</p></li>
+<li><p>TDX St.&nbsp;Paul Wind, LLC</p></li>
+<li><p>Goat Lake Hydro, Inc.</p></li>
+<li><p>Haida Energy, Inc.</p></li>
+<li><p>Alaska Environmental Power, LLC</p></li>
+<li><p>Alaska Electric Generation &amp; Transmission Cooperative, Inc</p></li>
+<li><p>Aurora Energy, LLC</p></li>
+<li><p>Aleutian Wind Energy, LLC</p></li>
+<li><p>Kwaan Electric Transmission Intertie Cooperative, Inc.</p></li>
+</ul>
+<p>The following certificates are not included in the dataset because they are inactive, despite being incorrectly categorized as active on the RCA website.</p>
+<ul>
+<li><p>Weldon S. Holmes, d/b/a Semloh Supply</p></li>
+<li><p>Weisner Trading Co.</p></li>
+<li><p>Paxson Lodge</p></li>
+<li><p>Anchorage ML&amp;P (acquired by CEA)</p></li>
+<li><p>Alaska Industrial Development &amp; Export Authority - Healy (Revoked in 2019, AIDEA sold the Healy project in 2014)</p></li>
+</ul>
+</section>
+</section>
+<section id="other-fixes" class="level2">
+<h2 class="anchored" data-anchor-id="other-fixes">Other fixes</h2>
+<p>When a utility’s service area was missing (because there was no KML available on the RCA site) or incorrect, corrected service areas were created by hardcoding the correct Public Land Survey System (PLSS) descriptions when possible. Using the Alaska Department of Natural Resources’ <a href="https://data-soa-dnr.opendata.arcgis.com/datasets/SOA-DNR::plss-sections-unclipped/about">PLSS sections dataset</a>, the script then retrieved the appropriate polygons for those descriptions.</p>
+<p>The table below lists utilities whose service areas were manually corrected using this method, along with the reason for the correction and a link to the related issue or pull request.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Certificate</th>
+<th>Issue</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>City of Akiak</td>
+<td>Typo in certificate service area description</td>
+<td><a href="https://github.com/acep-uaf/utility-service-areas/issues/11" class="uri">https://github.com/acep-uaf/utility-service-areas/issues/11</a></td>
+</tr>
+<tr class="even">
+<td>Akiachak</td>
+<td>Typo in certificate service area description</td>
+<td><a href="https://github.com/acep-uaf/utility-service-areas/issues/12" class="uri">https://github.com/acep-uaf/utility-service-areas/issues/12</a></td>
+</tr>
+<tr class="odd">
+<td>Chefornak</td>
+<td>Typo in certificate service area description</td>
+<td><a href="https://github.com/acep-uaf/utility-service-areas/issues/16" class="uri">https://github.com/acep-uaf/utility-service-areas/issues/16</a></td>
+</tr>
+<tr class="even">
+<td>Puvurnaq Power Company</td>
+<td>Typo in certificate service area description</td>
+<td><a href="https://github.com/acep-uaf/utility-service-areas/issues/47" class="uri">https://github.com/acep-uaf/utility-service-areas/issues/47</a></td>
+</tr>
+<tr class="odd">
+<td>Unalakleet Valley Electric Cooperative</td>
+<td>No KML available from RCA site</td>
+<td><a href="https://github.com/acep-uaf/utility-service-areas/pull/45" class="uri">https://github.com/acep-uaf/utility-service-areas/pull/45</a></td>
+</tr>
+<tr class="even">
+<td>Birch Creek Tribal Council</td>
+<td>No KML available from RCA site</td>
+<td><a href="https://github.com/acep-uaf/utility-service-areas/pull/46" class="uri">https://github.com/acep-uaf/utility-service-areas/pull/46</a></td>
+</tr>
+</tbody>
+</table>
+<p>Some of the service area KML files available on the RCA website are outdated, since RCA no longer maintains them. This creates issues when a utility expands its service area by acquiring another utility. In these cases, the acquiring utility’s service area should include both its original territory and the territory of the acquired utility.</p>
+<p>This problem is especially relevant for the Alaska Village Electric Cooperative (AVEC), which has acquired numerous small utilities over the last decade and now serves 59 discontinuous communities across Alaska. Although AVEC’s official KML does not reflect many of these acquisitions, the acquired utilities’ KML files are still available. By merging those KMLs into AVEC’s service area, the script reconstructs a more accurate representation of AVEC’s current service area.</p>
+<p>The table below lists utilities that were manually merged into acquiring utilities for this reason.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Acquiring utility</th>
+<th>Acquired utility</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AVEC</td>
+<td>Teller Power Company</td>
+<td><a href="https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=6e731ed9-5898-4eaa-814c-8d1547ddac1a" class="uri">https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=6e731ed9-5898-4eaa-814c-8d1547ddac1a</a></td>
+</tr>
+<tr class="even">
+<td>AVEC</td>
+<td>City of Kotlik</td>
+<td><a href="https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=598DFC13-86CF-47A0-A1A3-09245D482BA9" class="uri">https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=598DFC13-86CF-47A0-A1A3-09245D482BA9</a></td>
+</tr>
+<tr class="odd">
+<td>AVEC</td>
+<td>City of Ekwok</td>
+<td><a href="https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=8c915917-efe4-41ca-8d7d-1cb7534b19a9" class="uri">https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=8c915917-efe4-41ca-8d7d-1cb7534b19a9</a></td>
+</tr>
+<tr class="even">
+<td>AVEC</td>
+<td>City of Kobuk</td>
+<td><a href="https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=2f3dee1f-e202-434b-8f0a-714714ca3682" class="uri">https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=2f3dee1f-e202-434b-8f0a-714714ca3682</a></td>
+</tr>
+<tr class="odd">
+<td>AVEC</td>
+<td>Bethel Utilities Corporation</td>
+<td><a href="https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=6eeb6425-ce1f-4c2f-b765-dfd3505e299f" class="uri">https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=6eeb6425-ce1f-4c2f-b765-dfd3505e299f</a></td>
+</tr>
+<tr class="even">
+<td>AVEC</td>
+<td>Twin Hills</td>
+<td><a href="https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=677d0f01-25b2-4c01-bf9b-bea7358300f9" class="uri">https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=677d0f01-25b2-4c01-bf9b-bea7358300f9</a></td>
+</tr>
+<tr class="odd">
+<td>CEA</td>
+<td>ML&amp;P</td>
+<td><a href="https://github.com/acep-uaf/utility-service-areas/issues/9#issuecomment-3054393380" class="uri">https://github.com/acep-uaf/utility-service-areas/issues/9#issuecomment-3054393380</a></td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
