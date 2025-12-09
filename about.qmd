@@ -7,7 +7,9 @@ format: html
 
 This site allows users to view and download the authorized service areas of utilities certificated by the Regulatory Commission of Alaska (RCA). The RCA sets and approves the areas in which utilities may operate, and provides this information on a per-utility basis through their website. These boundaries are invaluable for researchers who are studying energy rates in communities across Alaska, especially since the majority of Alaskans are served by microgrid systems which are not interconnected to a broader traditional power grid.
 
-The goal of this project was to create a single geospatial file in GeoJSON format which contains the service area boundaries of every active electric utility in Alaska. No such file currently exists.
+The goal of this project is to create a single geospatial layer containing the service area boundaries of every active electric utility in Alaska.
+
+-   The State of Alaska [Division of Community and Regional Affairs](https://dcra-cdo-dcced.opendata.arcgis.com/search?q=rca) (DCRA) also provides service area layers for electric, water, sewer, and natural gas utilities certificated by the RCA. For more information, visit the DCRA open data portal at <https://dcra-cdo-dcced.opendata.arcgis.com/search?q=rca>
 
 Note: before using this data in your project, please read this entire page to learn more about how this dataset was assembled. Because of source data quality issues, this dataset does not contain every utility's service area, and if it does, it might not be up-to-date.
 
@@ -24,7 +26,7 @@ Access the GitHub repository here: https://github.com/acep-uaf/utility-service-a
 ## Description of fields
 
 | Field | Type | Description |
-|------------------|------------------|------------------------------------|
+|-------------------|-------------------|------------------------------------|
 | `certificate_number` | number | Official numeric ID for the utility’s certificate. |
 | `entity` | string | A short name or acronym for the utility (e.g., "AEL&P"). Useful for grouping or labeling. |
 | `certificate_name` | string | Full name of the certificate holder as recorded by the Regulatory Commission of Alaska. |
