@@ -60,7 +60,10 @@ fetch_certificates_list <- function() {
     left_join(text_and_links, by = join_by(entity == text)) %>%
     rename(entity_url = href)
   out_certificate_csv$certificate_number <- as.numeric(out_certificate_csv$certificate_number)
-
+  
+  out_certificate_csv <- out_certificate_csv %>%
+    filter(!is.na(certificate_number))
+  
   out_certificate_csv[is.na(out_certificate_csv)] <- ""
   message(glue("Saving list of {nrow(out_certificate_csv)} unique electric certificates to CSV..."))
   file_name <- glue("rca_electric_certificates_{Sys.Date()}.csv")
@@ -213,7 +216,12 @@ filter_certificates_csv <- function(certificates_csv, operator_ids, inactive_ids
       certificate_status == "Active",
       # utility_type == "Electric",
       entity_type == "utility"
-    )
+    ) %>%
+    mutate(certificate_number = if (all(certificate_number == floor(certificate_number) | is.na(certificate_number))) {
+      as.integer(certificate_number)
+    } else {
+      certificate_number  # keep as double if not all integers - but the only # with a decimal is inactive and was filtered out just before this
+    })
 
   # Return the cleaned certificates dataframe, exluding "operator" entities and inactive utilities
   return(certificates_csv_filtered)
@@ -394,6 +402,7 @@ save_plss_patches <- function(patch, certificates, patch_effective_versions) {
   if (nrow(orig_kml_row) > 0 && nrow(patch_version_row) > 0) {
     if (orig_kml_row$kml_most_recent_update_date == patch_version_row$expected_kml_most_recent_update_date || is.na(patch_version_row$expected_kml_most_recent_update_date)) {
       out_path <- glue("data/{patch$cert}-servicearea-plss-fix.kml")
+      # Todo: fix this, there's no point in deleting and recreating them, PLSS is not changing
       st_write_or_overwrite(st_union(st_read(patch$query_url)), out_path)
       message(glue("PLSS patch for certificate {patch$cert} saved to {out_path}"))
       return(normalizePath(out_path))
@@ -511,7 +520,13 @@ generate_and_export_geojson <- function(kml_file_paths, certificates, out_file, 
                                                  NA_character_,
                                                  certificate_last_update_type)) %>%
     rowwise() %>%
-    mutate(geometry_cert_sync_status = set_sync_string(geometry_is_current))
+    mutate(geometry_cert_sync_status = set_sync_string(geometry_is_current)) %>%
+    mutate(certificate_number = if (all(certificate_number == floor(certificate_number) | is.na(certificate_number))) {
+      as.integer(certificate_number)
+    } else {
+      certificate_number  # keep as double if not all integers
+    }) %>%
+    mutate(certificate_granted_year = as.integer(certificate_granted_year))
     #rowwise() %>%
     #mutate(
     #  certificate_last_update_type = as.logical(certificate_last_update_type),

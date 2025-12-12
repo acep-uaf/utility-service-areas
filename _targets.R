@@ -9,7 +9,7 @@ library(targets)
 
 # Set target options:
 tar_option_set(
-  packages = c("tibble", "rvest", "tidyverse", "glue", "httr", "sf"), # Packages that your targets need for their tasks.
+  packages = c("tibble", "rvest", "tidyverse", "glue", "httr", "sf", "xml2"), # Packages that your targets need for their tasks.
   # format = "qs", # Optionally set the default storage format. qs is fast.
 )
 
@@ -173,7 +173,7 @@ list(
     # If the KML last update date does not match the date in the table, then the patches will be skipped for that certificate.
     # In this way, the patches will only be performed on a specific version of the KML that is known to have certain missing data.
     # To use this table, add a certificate being patched below and the current date of the last update in the KML (from kml_most_recent_update_date field).
-    # When RCA updates their KMLs, the patches will be skipped as the dates will not match anymore.
+    # If RCA updates their KMLs, the patches will be skipped as the dates will not match anymore.
     name = patch_effective_versions,
     command = tribble(
       ~cert, ~expected_kml_most_recent_update_date,
@@ -231,7 +231,7 @@ list(
   ),
   tar_target(
     name = electric_service_areas_cleaned_patched,
-    command = generate_and_export_geojson(append(certificate_kmls, plss_patches_kmls), certificates_with_kml_and_chronology_metadata, "service-areas-v2-metadata.geojson", merge_patches, patch_effective_versions),
+    command = generate_and_export_geojson(append(certificate_kmls, plss_patches_kmls), certificates_with_kml_and_chronology_metadata, "service-areas.geojson", merge_patches, patch_effective_versions),
     format = "file"
   )#,
   #### for dev
