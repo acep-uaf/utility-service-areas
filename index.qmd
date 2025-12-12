@@ -21,7 +21,7 @@ Papa = require("papaparse")
 ```
 
 ```{ojs}
-service_areas = FileAttachment("service-areas-v2-metadata.geojson").json()
+service_areas = FileAttachment("service-areas.geojson").json()
 ```
 
 ```{ojs}
