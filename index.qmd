@@ -21,7 +21,7 @@ Papa = require("papaparse")
 ```
 
 ```{ojs}
-service_areas = FileAttachment("service-areas-v2-metadata.geojson").json()
+service_areas = FileAttachment("service-areas.geojson").json()
 ```
 
 ```{ojs}
@@ -52,7 +52,7 @@ hide_sidebar = function () {
 
 button_code = `<button type="button" class="btn-close position-absolute top-0 end-0 m-2" aria-label="Close" onclick="(${hide_sidebar})()"></button>`;
 
-welcome_message = `${button_code}<h3>Alaska electric utilities service area explorer</h3><br>This interactive map enables you to view Alaskan electric utility service areas.<br><br>Try browsing around the map and clicking on a utility service area `;
+welcome_message = `${button_code}This interactive map enables you to view Alaska's electric utility service areas.<br><br>Try browsing around the map and clicking on a utility's service area `;
 mutable name = ""; // TODO: find a way to do this without mutable
 mutable cpcn_url = "";
 mutable granted_year = "";
@@ -170,7 +170,7 @@ map = {
   let communities = [];
   
   // https://github.com/HandsOnDataViz/leaflet-map-csv/blob/main/index.html
-  fetch('https://raw.githubusercontent.com/acep-aedg/aedg-data-pond/refs/heads/main/data/public/public_communities.csv')
+  fetch('https://raw.githubusercontent.com/acep-aedg/aedg-data-pond/refs/heads/main/data/public/public_communities/public_communities.csv')
     .then((response) => response.text())
     .then((csvString) => {
       let data = Papa.parse(csvString, {header: true, dynamicTyping: true, skipEmptyLines: true}).data;

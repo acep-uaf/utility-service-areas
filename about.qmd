@@ -13,20 +13,22 @@ The goal of this project is to create a single geospatial layer containing the s
 
 Note: before using this data in your project, please read this entire page to learn more about how this dataset was assembled. Because of source data quality issues, this dataset does not contain every utility's service area, and if it does, it might not be up-to-date.
 
+### You can explore the service areas on an [interactive map](/), and visit the [Alaska Energy Data Gateway](https://akenergygateway.alaska.edu/explore/communities/anchorage) to see the dataset in action.
+
 # Download the data
 
-Download the latest version of the GeoJSON file: <a href="/service-areas-v2-metadata.geojson" target="_blank" download>Download now</a>
+Download the latest version of the GeoJSON file: <a href="/service-areas.geojson" target="_blank" download>Download now</a>
 
 # GitHub repository
 
-Access the GitHub repository here: https://github.com/acep-uaf/utility-service-areas
+Access the GitHub repository here: <https://github.com/acep-aedg/aedg-utility-service-areas>
 
 # Metadata
 
 ## Description of fields
 
 | Field | Type | Description |
-|-------------------|-------------------|------------------------------------|
+|-------------------|-------------------|-----------------------------------|
 | `certificate_number` | number | Official numeric ID for the utility’s certificate. |
 | `entity` | string | A short name or acronym for the utility (e.g., "AEL&P"). Useful for grouping or labeling. |
 | `certificate_name` | string | Full name of the certificate holder as recorded by the Regulatory Commission of Alaska. |

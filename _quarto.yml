@@ -2,7 +2,7 @@
    type: website
 
  website:
-   title: "Service area explorer"
+   title: "Alaska electric service areas dataset"
    navbar:
      left:
        - href: index.qmd
