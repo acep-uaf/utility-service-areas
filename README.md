@@ -16,5 +16,5 @@ The pipeline is written using the R package `targets`. Clone the repository and 
 
 ## Metadata/documentation
 
-See the demo site for more details: https://acep-uaf.github.io/utility-service-areas/about.html#metadata
+See the demo site for more details: https://acep-aedg.github.io/aedg-utility-service-areas/about.html#metadata
 
