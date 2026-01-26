@@ -68,7 +68,7 @@ list(
       # Alaska Power Company (also a subsidiary of Alaska Power & Telephone Company) purchases "all of the electric energy and capacity" of the Falls Creek Power Facilities
       # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=6d6ff0db-240d-4fa5-8314-8fd8a9a33588
       # https://docs.publicnow.com/viewDoc?filename=201404%5CEXT%5CE3D47B50365CCC308D7ADD59726CC880820447F4_EEC5F078E9ECE7B508DEF511BE8F31137112704A.PDF
-      765,
+      785,
       # Alaska Industrial Development & Export Authority owns the Snettisham Hydroelectric Project. The project is operated and maintained by Alaska Electric Light and Power Company, who also purchases Snettisham Hydro power
       # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=dc64d68e-d639-499e-9d3b-2f6325ba66a1
       # https://rca.alaska.gov/RCAWeb/ViewFile.aspx?id=E7E05BD9-783C-4587-BEAA-C12D590D7741
@@ -185,6 +185,7 @@ list(
       395, "2002-11-12",
       # KMLs missing from RCA's site
       741, NA,
+      765, NA,
       767, NA
     )
   ),
@@ -220,6 +221,7 @@ list(
             "K018S011W09", "K018S011W16", "K018S011W21", "K018S011W22", "K018S011W23",
             "K018S011W26", "K018S011W27", "K018S011W28", "K018S011W34", "K018S011W35", "K018S011W36",
             "K019S011W01", "K019S011W02", "K019S011W03"), # Unalakleet Valley Electric
+      765, c("S013S075W29", "S013S075W32", "S013S075W33"), # Platinum Commercial Company
       767, c("F017N009E21", "F017N009E22", "F017N009E27", "F017N009E28", "F017N009E33", "F017N009E34") # Birch Creek Tribal Council
     ) %>% format_plss_patches()
   ),
