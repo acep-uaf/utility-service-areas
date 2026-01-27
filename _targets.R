@@ -184,6 +184,7 @@ list(
       365, "1990-04-25",
       395, "2002-11-12",
       # KMLs missing from RCA's site
+      289, NA,
       741, NA,
       765, NA,
       767, NA
@@ -217,6 +218,12 @@ list(
       365, c("S001N086W19", "S001N086W20", "S001N086W21", "S001N086W28", "S001N086W29", "S001N086W30"), # Fixing error in Chefornak service area description https://github.com/acep-uaf/utility-service-areas/issues/16,
       395, c("S002S079W28", "S002S079W29", "S002S079W32", "S002S079W33"), # Fixing error in Puvurnaq Power Company service area description https://github.com/acep-uaf/utility-service-areas/issues/47
       # Creating missing KMLs https://github.com/acep-uaf/utility-service-areas/issues/8
+      289, c("S058S086W25", "S058S086W26", "S058S086W31", "S058S086W32", "S058S086W33", "S058S086W34",
+             "S058S086W35", "S058S086W36", "S059S086W01", "S059S086W02", "S059S086W03", "S059S086W04",
+             "S059S086W05", "S059S086W06", "S059S086W09", "S059S086W10", "S059S086W11", "S059S086W12",
+             "S059S086W13", "S059S086W14", "S059S086W15", "S059S086W16", "S059S086W21", "S059S086W22",
+             "S059S086W23", "S059S086W24", "S059S086W25", "S059S086W26", "S059S086W27", "S059S086W35",
+             "S059S086W36"), # City of King Cove
       741, c("K018S010W28", "K018S010W29", "K018S010W30", "K018S010W31", "K018S010W32",
             "K018S011W09", "K018S011W16", "K018S011W21", "K018S011W22", "K018S011W23",
             "K018S011W26", "K018S011W27", "K018S011W28", "K018S011W34", "K018S011W35", "K018S011W36",
